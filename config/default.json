@@ -1,0 +1,17 @@
+{
+  "telemetry": {
+    "logger": {
+      "level": "info",
+      "prettyPrint": false
+    },
+    "tracing": {
+      "enabled": false,
+      "url": "http://telemetryUrl/tracing"
+    },
+    "metrics": {
+      "enabled": false,
+      "url": "http://telemetryUrl/metrics",
+      "interval": "3"
+    }
+  }
+}

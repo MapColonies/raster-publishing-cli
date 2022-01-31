@@ -1,0 +1,44 @@
+{{- $releaseName := .Release.Name -}}
+{{- $chartName := include "ts-script-boilerplate.name" . -}}
+{{- $cloudProviderFlavor := include "ts-script-boilerplate.cloudProviderFlavor" . -}}
+{{- $cloudProviderDockerRegistryUrl := include "ts-script-boilerplate.cloudProviderDockerRegistryUrl" . -}}
+{{- $cloudProviderImagePullSecretName := include "ts-script-boilerplate.cloudProviderImagePullSecretName" . -}}
+{{- $imageTag := include "ts-server-boilerplate.tag" . -}}
+{{- if .Values.enabled -}}
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: {{ $releaseName }}-{{ $chartName }}
+  labels:
+    app: {{ $chartName }}
+    component: {{ $chartName }}
+    environment: {{ include "ts-script-boilerplate.environment" . }}
+    release: {{ $releaseName }}
+    {{- include "ts-script-boilerplate.labels" . | nindent 4 }}
+spec:
+  schedule: {{ .Values.cron.schedule | quote }}
+  successfulJobsHistoryLimit: {{ .Values.cron.successfulJobsHistoryLimit }}
+  failedJobsHistoryLimit: {{ .Values.cron.failedJobsHistoryLimit }}
+  concurrencyPolicy: {{ .Values.cron.concurrencyPolicy }}
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          {{- if $cloudProviderImagePullSecretName }}
+          imagePullSecrets:
+            - name: {{ $cloudProviderImagePullSecretName | quote }}
+          {{- end }}
+          restartPolicy: {{ .Values.cron.restartPolicy }}
+          containers:
+            - name: {{ $releaseName }}-{{ $chartName }}-deployment
+              {{- with .Values.image }}
+              image: {{ $cloudProviderDockerRegistryUrl }}{{ .repository }}:{{ $imageTag }}
+              {{- end }}
+              envFrom:
+                - configMapRef:
+                    name: {{ $releaseName }}-{{ $chartName }}-configmap
+              {{- if .Values.resources.enabled }}
+              resources:
+                {{- toYaml .Values.resources.value | nindent 16 }}
+              {{- end }}
+{{- end -}}

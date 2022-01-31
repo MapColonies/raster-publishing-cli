@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ts-script-boilerplate
+description: A Helm chart for ts-script-boilerplate cron job
+type: application
+version: 1.0.0
+appVersion: 1.0.0
