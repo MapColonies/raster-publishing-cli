@@ -1,5 +1,5 @@
 import { injectable } from 'tsyringe';
-import { Argv, CommandModule } from 'yargs';
+import { Argv, CommandModule, Arguments } from 'yargs';
 import { PublishManager } from './publishManager';
 
 @injectable()
@@ -15,7 +15,7 @@ export class PublishCommand implements CommandModule {
     return yargs.positional('csvPath', { describe: 'layer data csv file path', type: 'string' });
   };
 
-  public handler = async (args: { [argName: string]: unknown; _: (string | number)[]; $0: string }): Promise<void> => {
+  public handler = async (args: Arguments): Promise<void> => {
     await this.manager.publishLayersFromCsv(args['csvPath'] as string);
     return Promise.resolve();
   };

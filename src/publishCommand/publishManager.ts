@@ -1,19 +1,36 @@
 import { createReadStream } from 'fs';
 import { inject, singleton } from 'tsyringe';
 import csv, { Options } from 'csv-parser';
+import bbox from '@turf/bbox';
+import { GeoJSON } from 'geojson';
 import { Logger } from '@map-colonies/js-logger';
-import { LayerMetadata, ProductType } from '@map-colonies/mc-model-types';
+import { LayerMetadata, ProductType, RecordType, SensorType } from '@map-colonies/mc-model-types';
 import { ConflictError } from '@map-colonies/error-types';
 import { SERVICES } from '../common/constants';
-import { IConfig } from '../common/interfaces';
+import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
 import { MapPublisherClient } from '../clients/mapPublisherClient';
 import { CatalogClient } from '../clients/catalogClient';
 import { MetadataValidator } from './metadataValidator';
 import { LinkBuilder } from './linksBuilder';
 
 interface Row {
+  productId: string;
+  productName: string;
+  productVersion: string;
+  productType: string;
+  productSubType: string;
+  description: string;
+  sourceDateStart: string;
+  sourceDateEnd: string;
+  maxResolutionDeg: string;
+  maxResolutionMeter: string;
+  minHorizontalAccuracyCE90: string;
+  footprint: string;
+  region: string;
+  classification: string;
+  scale: string;
   tilesPath: string;
-  metadata: string;
+  storageProvider: string;
 }
 
 @singleton()
@@ -55,7 +72,7 @@ export class PublishManager {
   }
 
   public async handleRow(row: Row): Promise<void> {
-    const metadata = JSON.parse(row.metadata) as LayerMetadata;
+    const metadata = this.parseMetadata(row);
     await this.validateRunConditions(metadata);
     const layerName = this.getMapServingLayerName(
       metadata.productId as string,
@@ -63,11 +80,24 @@ export class PublishManager {
       metadata.productType as ProductType
     );
     const publicMapServerUrl = this.config.get<string>('publicMapServerURL');
+    let cacheType: PublishedMapLayerCacheType;
+    switch (row.storageProvider.toLowerCase()) {
+      case 'fs':
+      case 'file':
+        cacheType = PublishedMapLayerCacheType.FS;
+        break;
+      case 's3':
+        cacheType = PublishedMapLayerCacheType.S3;
+        break;
+      default:
+        this.logger.error(`invalid storage provider: ${row.storageProvider}. valid values: "FS", "S3"`);
+        throw new Error('invalid storage provider');
+    }
     await this.mapPublisher.publishLayer({
-      cacheType,
-      maxZoomLevel,
+      cacheType: cacheType,
+      maxZoomLevel: 20,
       name: layerName,
-      tilesPath,
+      tilesPath: row.tilesPath,
     });
     await this.catalog.publish({
       metadata: metadata,
@@ -86,10 +116,10 @@ export class PublishManager {
         clonedLayer.productType
       );
       await this.mapPublisher.publishLayer({
-        cacheType,
-        maxZoomLevel,
+        cacheType: cacheType,
+        maxZoomLevel: 20,
         name: unifiedLayerName,
-        tilesPath,
+        tilesPath: row.tilesPath,
       });
       await this.catalog.publish({
         metadata: metadata,
@@ -139,5 +169,47 @@ export class PublishManager {
       layerName = `${productId}-${productVersion}-${productType as string}`;
     }
     return layerName;
+  }
+
+  private parseMetadata(row: Row): LayerMetadata {
+    const metadata: LayerMetadata = {
+      productId: row.productId,
+      accuracyCE90: row.minHorizontalAccuracyCE90 !== '' ? parseFloat(row.minHorizontalAccuracyCE90) : undefined,
+      classification: row.classification,
+      description: row.description !== '' ? row.description : undefined,
+      footprint: JSON.parse(row.footprint) as GeoJSON,
+      maxResolutionMeter: parseFloat(row.maxResolutionDeg),
+      producerName: 'IDFMU',
+      productName: row.productName,
+      productSubType: row.productSubType !== '' ? row.productSubType : undefined,
+      productType: row.productType as ProductType,
+      productVersion: row.productVersion,
+      region:
+        row.region != ''
+          ? //remove unwanted spaces
+            row.region
+              .split(',')
+              .map((str) => str.trim())
+              .join(',')
+          : undefined,
+      resolution: parseFloat(row.maxResolutionDeg),
+      scale: row.scale != '' ? row.scale : undefined,
+      sensorType: [SensorType.UNDEFINED],
+      sourceDateStart: new Date(row.sourceDateStart),
+      sourceDateEnd: new Date(row.sourceDateEnd),
+      srsId: '4326',
+      srsName: 'WGS84GEO',
+      rawProductData: undefined,
+      includedInBests: undefined,
+      ingestionDate: undefined,
+      layerPolygonParts: undefined,
+      type: RecordType.RECORD_RASTER,
+      creationDate: undefined,
+      rms: undefined,
+      updateDate: undefined,
+      productBoundingBox: undefined,
+    };
+    metadata.productBoundingBox = bbox(metadata.footprint).join(',');
+    return metadata;
   }
 }
