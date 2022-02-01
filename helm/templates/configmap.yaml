@@ -1,6 +1,6 @@
-{{- $chartName := include "ts-script-boilerplate.name" . -}}
-{{- $tracingUrl := include "ts-script-boilerplate.tracingUrl" . -}}
-{{- $metricsUrl := include "ts-script-boilerplate.metricsUrl" . -}}
+{{- $chartName := include "raster-publishing-cli.name" . -}}
+{{- $tracingUrl := include "raster-publishing-cli.tracingUrl" . -}}
+{{- $metricsUrl := include "raster-publishing-cli.metricsUrl" . -}}
 {{- if .Values.enabled -}}
 apiVersion: v1
 kind: ConfigMap

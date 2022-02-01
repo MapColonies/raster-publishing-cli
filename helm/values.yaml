@@ -13,7 +13,7 @@ cloudProvider:
   flavor: openshift
 
 image:
-  repository: ts-script-boilerplate
+  repository: raster-publishing-cli
   tag: 'latest'
 
 cron:

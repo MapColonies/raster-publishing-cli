@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "ts-script-boilerplate.name" -}}
+{{- define "raster-publishing-cli.name" -}}
 {{- default .Chart.Name | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "ts-script-boilerplate.fullname" -}}
+{{- define "raster-publishing-cli.fullname" -}}
 {{- $name := default .Chart.Name }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
@@ -22,16 +22,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "ts-script-boilerplate.chart" -}}
+{{- define "raster-publishing-cli.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "ts-script-boilerplate.labels" -}}
-helm.sh/chart: {{ include "ts-script-boilerplate.chart" . }}
-{{ include "ts-script-boilerplate.selectorLabels" . }}
+{{- define "raster-publishing-cli.labels" -}}
+helm.sh/chart: {{ include "raster-publishing-cli.chart" . }}
+{{ include "raster-publishing-cli.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -48,15 +48,15 @@ Returns the tag of the chart.
 {{/*
 Selector labels
 */}}
-{{- define "ts-script-boilerplate.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "ts-script-boilerplate.name" . }}
+{{- define "raster-publishing-cli.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "raster-publishing-cli.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Returns the environment from global if exists or from the chart's values, defaults to development
 */}}
-{{- define "ts-script-boilerplate.environment" -}}
+{{- define "raster-publishing-cli.environment" -}}
 {{- if .Values.global.environment }}
     {{- .Values.global.environment -}}
 {{- else -}}
@@ -67,7 +67,7 @@ Returns the environment from global if exists or from the chart's values, defaul
 {{/*
 Returns the cloud provider name from global if exists or from the chart's values, defaults to minikube
 */}}
-{{- define "ts-script-boilerplate.cloudProviderFlavor" -}}
+{{- define "raster-publishing-cli.cloudProviderFlavor" -}}
 {{- if .Values.global.cloudProvider.flavor }}
     {{- .Values.global.cloudProvider.flavor -}}
 {{- else if .Values.cloudProvider -}}
@@ -80,7 +80,7 @@ Returns the cloud provider name from global if exists or from the chart's values
 {{/*
 Returns the cloud provider docker registry url from global if exists or from the chart's values
 */}}
-{{- define "ts-script-boilerplate.cloudProviderDockerRegistryUrl" -}}
+{{- define "raster-publishing-cli.cloudProviderDockerRegistryUrl" -}}
 {{- if .Values.global.cloudProvider.dockerRegistryUrl }}
     {{- printf "%s/" .Values.global.cloudProvider.dockerRegistryUrl -}}
 {{- else if .Values.cloudProvider.dockerRegistryUrl -}}
@@ -92,7 +92,7 @@ Returns the cloud provider docker registry url from global if exists or from the
 {{/*
 Returns the cloud provider image pull secret name from global if exists or from the chart's values
 */}}
-{{- define "ts-script-boilerplate.cloudProviderImagePullSecretName" -}}
+{{- define "raster-publishing-cli.cloudProviderImagePullSecretName" -}}
 {{- if .Values.global.cloudProvider.imagePullSecretName }}
     {{- .Values.global.cloudProvider.imagePullSecretName -}}
 {{- else if .Values.cloudProvider -}}
@@ -103,7 +103,7 @@ Returns the cloud provider image pull secret name from global if exists or from 
 {{/*
 Returns the tracing url from global if exists or from the chart's values
 */}}
-{{- define "ts-script-boilerplate.tracingUrl" -}}
+{{- define "raster-publishing-cli.tracingUrl" -}}
 {{- if .Values.global.tracing.url }}
     {{- .Values.global.tracing.url -}}
 {{- else if .Values.cloudProvider -}}
@@ -114,7 +114,7 @@ Returns the tracing url from global if exists or from the chart's values
 {{/*
 Returns the tracing url from global if exists or from the chart's values
 */}}
-{{- define "ts-script-boilerplate.metricsUrl" -}}
+{{- define "raster-publishing-cli.metricsUrl" -}}
 {{- if .Values.global.metrics.url }}
     {{- .Values.global.metrics.url -}}
 {{- else -}}
