@@ -10,7 +10,7 @@ import { SERVICES } from '../common/constants';
 import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
 import { MapPublisherClient } from '../clients/mapPublisherClient';
 import { CatalogClient } from '../clients/catalogClient';
-import { MetadataValidator } from './metadataValidator';
+//import { MetadataValidator } from './metadataValidator';
 import { LinkBuilder } from './linksBuilder';
 
 interface Row {
@@ -42,7 +42,7 @@ export class PublishManager {
     @inject(SERVICES.CONFIG) private readonly config: IConfig,
     private readonly mapPublisher: MapPublisherClient,
     private readonly catalog: CatalogClient,
-    private readonly metadataValidator: MetadataValidator,
+    //private readonly metadataValidator: MetadataValidator,
     private readonly linkBuilder: LinkBuilder
   ) {
     this.csvOptions = config.get<Options>('csvOptions');
@@ -53,6 +53,10 @@ export class PublishManager {
     this.logger.info(`reading csv: ${csvPath}.`);
     const csvPromise = new Promise<void>((resolve, reject) => {
       createReadStream(csvPath)
+        .on('error', (err) => {
+          this.logger.error(err);
+          reject(err);
+        })
         .pipe(csv())
         .on('data', (data) => {
           layerPromises.push(this.handleRow(data as Row));
@@ -68,7 +72,11 @@ export class PublishManager {
     });
 
     layerPromises.push(csvPromise);
-    await Promise.allSettled(layerPromises);
+    try {
+      await Promise.allSettled(layerPromises);
+    } catch {
+      this.logger.error('some of the supplied layers failed to publish.');
+    }
   }
 
   public async handleRow(row: Row): Promise<void> {
@@ -132,7 +140,7 @@ export class PublishManager {
   }
 
   private async validateRunConditions(metadata: LayerMetadata): Promise<void> {
-    await this.metadataValidator.validate(metadata);
+    //await this.metadataValidator.validate(metadata);
     const resourceId = metadata.productId as string;
     const version = metadata.productVersion as string;
     const productType = metadata.productType as ProductType;
@@ -195,8 +203,8 @@ export class PublishManager {
       resolution: parseFloat(row.maxResolutionDeg),
       scale: row.scale != '' ? row.scale : undefined,
       sensorType: [SensorType.UNDEFINED],
-      sourceDateStart: new Date(row.sourceDateStart),
-      sourceDateEnd: new Date(row.sourceDateEnd),
+      sourceDateStart: this.parseLocalDate(row.sourceDateStart),
+      sourceDateEnd: this.parseLocalDate(row.sourceDateEnd),
       srsId: '4326',
       srsName: 'WGS84GEO',
       rawProductData: undefined,
@@ -211,5 +219,11 @@ export class PublishManager {
     };
     metadata.productBoundingBox = bbox(metadata.footprint).join(',');
     return metadata;
+  }
+
+  private parseLocalDate(date: string): Date {
+    const parts = date.split('/').map((str) => parseInt(str));
+    const parsed = new Date(Date.UTC(parts[2], parts[1], parts[0]));
+    return parsed;
   }
 }

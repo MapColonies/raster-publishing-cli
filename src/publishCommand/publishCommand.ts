@@ -5,7 +5,7 @@ import { PublishManager } from './publishManager';
 @injectable()
 export class PublishCommand implements CommandModule {
   public deprecated = false;
-  public command = '$0';
+  public command = '$0 <csvPath>';
   public describe = 'publish new layer from existing tiles';
   public aliases = ['publish'];
 
