@@ -1,3 +1,0 @@
-productId	productName	productVersion	productType	productSubType	description	sourceDateStart	sourceDateEnd	maxResolutionDeg	maxResolutionMeter	minHorizontalAccuracyCE90	footprint	region	classification	scale	tilesPath	storageProvider
-testId1	test1	testVersion1	OrthophotoHistory		testdesc1	05/10/2011	05/11/2011	0.98	100		"{""type"":""Polygon"",""coordinates"":[[[-180,-90],[-180,90],[180,90],[180,-90],[-180,-90]]]}"	"reg1,reg2"	5	10000	testId1/testVersion1/OrthophotoHistory	FS
-testId2	test2	testVersion2	VectorBest			05/10/2011	05/10/2011	0.72	300		"{""type"":""Polygon"",""coordinates"":[[[-180,-90],[-180,90],[180,90],[180,-90],[-180,-90]]]}"		4		testId2/testVersion2/VectorBest	s3
