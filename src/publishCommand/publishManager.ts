@@ -80,6 +80,7 @@ export class PublishManager {
   }
 
   public async handleRow(row: Row): Promise<void> {
+    this.validateRow(row);
     const metadata = this.parseMetadata(row);
     await this.validateRunConditions(metadata);
     const layerName = this.getMapServingLayerName(
@@ -130,7 +131,7 @@ export class PublishManager {
         tilesPath: row.tilesPath,
       });
       await this.catalog.publish({
-        metadata: metadata,
+        metadata: clonedLayer,
         links: this.linkBuilder.createLinks({
           layerName: unifiedLayerName,
           serverUrl: publicMapServerUrl,
@@ -186,7 +187,7 @@ export class PublishManager {
       classification: row.classification,
       description: row.description !== '' ? row.description : undefined,
       footprint: JSON.parse(row.footprint) as GeoJSON,
-      maxResolutionMeter: parseFloat(row.maxResolutionDeg),
+      maxResolutionMeter: parseFloat(row.maxResolutionMeter),
       producerName: 'IDFMU',
       productName: row.productName,
       productSubType: row.productSubType !== '' ? row.productSubType : undefined,
@@ -225,5 +226,48 @@ export class PublishManager {
     const parts = date.split('/').map((str) => parseInt(str));
     const parsed = new Date(Date.UTC(parts[2], parts[1], parts[0]));
     return parsed;
+  }
+
+  private validateRow(row: Row): void {
+    if (row.productId === '') {
+      this.logger.error('invalid data, missing required filed: productId');
+      throw new Error('invalid data');
+    }
+    if (row.productVersion === '') {
+      this.logger.error('invalid data, missing required filed: productVersion');
+      throw new Error('invalid data');
+    }
+    if (row.classification === '') {
+      this.logger.error('invalid data, missing required filed: classification');
+      throw new Error('invalid data');
+    }
+    if (row.footprint === '') {
+      this.logger.error('invalid data, missing required filed: footprint');
+      throw new Error('invalid data');
+    }
+    if (row.maxResolutionDeg === '') {
+      this.logger.error('invalid data, missing required filed: maxResolutionDeg');
+      throw new Error('invalid data');
+    }
+    if (row.productType === '') {
+      this.logger.error('invalid data, missing required filed: productType');
+      throw new Error('invalid data');
+    }
+    if (row.maxResolutionMeter === '') {
+      this.logger.error('invalid data, missing required filed: maxResolutionMeter');
+      throw new Error('invalid data');
+    }
+    if (row.sourceDateStart === '') {
+      this.logger.error('invalid data, missing required filed: sourceDateStart');
+      throw new Error('invalid data');
+    }
+    if (row.sourceDateEnd === '') {
+      this.logger.error('invalid data, missing required filed: sourceDateEnd');
+      throw new Error('invalid data');
+    }
+    if (row.tilesPath === '') {
+      this.logger.error('invalid data, missing required filed: tilesPath');
+      throw new Error('invalid data');
+    }
   }
 }

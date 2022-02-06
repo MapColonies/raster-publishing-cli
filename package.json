@@ -1,7 +1,7 @@
 {
-  "name": "service-name",
+  "name": "raster-publishing-cli",
   "version": "1.0.0",
-  "description": "This is template for map colonies typescript service",
+  "description": "cli tool for publishing raster layers from existing tiles",
   "main": "./src/index.ts",
   "scripts": {
     "test:unit": "jest --config=./tests/configurations/unit/jest.config.js",
