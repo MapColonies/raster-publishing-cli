@@ -17,7 +17,7 @@
     "prebuild": "npm run clean",
     "build": "tsc --project tsconfig.build.json  && npm run assets:copy && npm run copySchema:dist",
     "start": "npm run build && cd dist && node ./index.js",
-    "assets:copy": "copyfiles -f ./config/* ./dist/config && copyfiles ./package.json dist Schema",
+    "assets:copy": "copyfiles -f ./config/* ./dist/config && copyfiles ./package.json dist",
     "copySchema:test": "copyfiles -u 5 \"./node_modules/@map-colonies/mc-model-types/Schema/yaml/**/*\" ./Schema",
     "copySchema:dist": "copyfiles -u 5 \"./node_modules/@map-colonies/mc-model-types/Schema/yaml/**/*\" ./dist/Schema",
     "clean": "rimraf dist Schema",
