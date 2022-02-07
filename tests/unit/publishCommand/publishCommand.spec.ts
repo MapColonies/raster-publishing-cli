@@ -10,7 +10,7 @@ describe('PublishCommand', () => {
   let command: PublishCommand;
   const publishLayersFromCsvMock = jest.fn();
   const managerMock = {
-    publishLayersFromCsv: publishLayersFromCsvMock
+    publishLayersFromCsv: publishLayersFromCsvMock,
   } as unknown as PublishManager;
 
   beforeEach(() => {
@@ -24,7 +24,7 @@ describe('PublishCommand', () => {
 
   describe('handler', () => {
     it('calls publishLayersFromCsv', async () => {
-      const args = {csvPath: 'csvPath'} as unknown as Arguments;
+      const args = { csvPath: 'csvPath' } as unknown as Arguments;
       await command.handler(args);
 
       expect(publishLayersFromCsvMock).toHaveBeenCalledTimes(1);

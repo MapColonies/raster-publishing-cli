@@ -15,10 +15,10 @@ export const registerDependencies = (
 ): DependencyContainer => {
   const container = useChild ? defaultContainer.createChildContainer() : defaultContainer;
   dependencies.forEach((obj) => {
-    container.register(obj.token, obj.provider as constructor<unknown>)
+    container.register(obj.token, obj.provider as constructor<unknown>);
   });
   override?.forEach((obj) => {
-    container.register(obj.token, obj.provider as constructor<unknown>)
-  })
+    container.register(obj.token, obj.provider as constructor<unknown>);
+  });
   return container;
 };
