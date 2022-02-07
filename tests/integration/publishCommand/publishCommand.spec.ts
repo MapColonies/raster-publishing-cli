@@ -11,17 +11,12 @@ import { PublishCommandCliTrigger } from './helpers/CliTrigger';
 
 describe('PublishCommand', function () {
   let cli: PublishCommandCliTrigger;
-  // let consoleLogMock: jest.SpyInstance;
   let processExitMock: jest.SpyInstance;
 
   beforeEach(function () {
-    // consoleLogMock = jest.spyOn(global.console, 'log');
-    // consoleLogMock.mockReturnValue(undefined);
-    // jest.spyOn(global.console, 'error').mockReturnValue(undefined); // prevent cli error logs from messing with test log on bad path tests
     processExitMock = jest.spyOn(global.process, 'exit');
     processExitMock.mockReturnValueOnce(undefined); //prevent cli exit from killing the test
 
-    //overriding  containers that are registered with decorators dont work with current implementation
     const app = getApp({
       override: [
         { token: SERVICES.LOGGER, provider: { useValue: jsLogger({ enabled: true }) } },

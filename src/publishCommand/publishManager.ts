@@ -10,7 +10,6 @@ import { SERVICES } from '../common/constants';
 import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
 import { MapPublisherClient } from '../clients/mapPublisherClient';
 import { CatalogClient } from '../clients/catalogClient';
-//import { MetadataValidator } from './metadataValidator';
 import { LinkBuilder } from './linksBuilder';
 
 interface Row {
@@ -42,7 +41,6 @@ export class PublishManager {
     @inject(SERVICES.CONFIG) private readonly config: IConfig,
     private readonly mapPublisher: MapPublisherClient,
     private readonly catalog: CatalogClient,
-    //private readonly metadataValidator: MetadataValidator,
     private readonly linkBuilder: LinkBuilder
   ) {
     this.csvOptions = config.get<Options>('csvOptions');
@@ -141,17 +139,15 @@ export class PublishManager {
   }
 
   private async validateRunConditions(metadata: LayerMetadata): Promise<void> {
-    //await this.metadataValidator.validate(metadata);
     const resourceId = metadata.productId as string;
     const version = metadata.productVersion as string;
     const productType = metadata.productType as ProductType;
 
     // todo: version 1.0 condition defines only one material with the same ID, no history parts are allowed
     if (productType === ProductType.ORTHOPHOTO_HISTORY) {
-      await this.validateNotExistsInCatalog(resourceId);
-    } else {
-      await this.validateNotExistsInCatalog(resourceId, version);
+      await this.validateNotExistsInCatalog(resourceId, undefined, ProductType.ORTHOPHOTO);
     }
+    await this.validateNotExistsInCatalog(resourceId, version, productType);
     await this.validateNotExistsInMapServer(resourceId, version, productType);
   }
 
@@ -163,10 +159,10 @@ export class PublishManager {
     }
   }
 
-  private async validateNotExistsInCatalog(resourceId: string, version?: string): Promise<void> {
-    const existsInCatalog = await this.catalog.exists(resourceId, version);
+  private async validateNotExistsInCatalog(resourceId: string, version?: string, productType?: ProductType): Promise<void> {
+    const existsInCatalog = await this.catalog.exists(resourceId, version, productType);
     if (existsInCatalog) {
-      throw new ConflictError(`layer id: ${resourceId} version: ${version as string}, already exists in catalog`);
+      throw new ConflictError(`layer id: ${resourceId} version: ${version as string} type: ${productType as string}, already exists in catalog`);
     }
   }
 
