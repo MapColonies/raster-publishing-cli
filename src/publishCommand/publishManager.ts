@@ -100,18 +100,18 @@ export class PublishManager {
         this.logger.error(`invalid storage provider: ${row.storageProvider}. valid values: "FS", "S3"`);
         throw new Error('invalid storage provider');
     }
-    await this.mapPublisher.publishLayer({
-      cacheType: cacheType,
-      maxZoomLevel: 20,
-      name: layerName,
-      tilesPath: row.tilesPath,
-    });
     await this.catalog.publish({
       metadata: metadata,
       links: this.linkBuilder.createLinks({
         layerName: layerName,
         serverUrl: publicMapServerUrl,
       }),
+    });
+    await this.mapPublisher.publishLayer({
+      cacheType: cacheType,
+      maxZoomLevel: 20,
+      name: layerName,
+      tilesPath: row.tilesPath,
     });
     // todo: In update scenario need to change the logic to support history and update unified files
     if (metadata.productType === ProductType.ORTHOPHOTO_HISTORY) {
