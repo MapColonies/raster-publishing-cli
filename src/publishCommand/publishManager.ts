@@ -11,6 +11,7 @@ import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
 import { MapPublisherClient } from '../clients/mapPublisherClient';
 import { CatalogClient } from '../clients/catalogClient';
 import { LinkBuilder } from './linksBuilder';
+import { resolveRef } from 'ajv/dist/compile';
 
 interface Row {
   productId: string;
@@ -47,7 +48,7 @@ export class PublishManager {
   }
 
   public async publishLayersFromCsv(csvPath: string): Promise<void> {
-    const layerPromises: Promise<unknown>[] = [];
+    const layerActions: (()=>Promise<unknown>)[] = [];
     this.logger.info(`reading csv: ${csvPath}.`);
     const csvPromise = new Promise<void>((resolve, reject) => {
       createReadStream(csvPath)
@@ -57,7 +58,9 @@ export class PublishManager {
         })
         .pipe(csv())
         .on('data', (data) => {
-          layerPromises.push(this.handleRow(data as Row));
+          layerActions.push(async ()=>{
+            await this.handleRow(data as Row);
+          });
         })
         .on('end', () => {
           this.logger.info('finished reading csv file');
@@ -69,12 +72,20 @@ export class PublishManager {
         });
     });
 
-    layerPromises.push(csvPromise);
     try {
-      await Promise.allSettled(layerPromises);
-    } catch {
-      this.logger.error('some of the supplied layers failed to publish.');
+      await csvPromise;
+      const results = await Promise.allSettled(layerActions.map(async (action)=> action()));
+      results.forEach(res => {
+        if(res.status === 'rejected'){
+          const err = res.reason as Error;
+          this.logger.error(`a supplied layers failed to publish: ${err.message}`);
+        }
+      })
+    } catch (err){
+      const error = err as Error;
+      this.logger.error(`failed to parse csv: ${error.message}`);
     }
+    
   }
 
   public async handleRow(row: Row): Promise<void> {
