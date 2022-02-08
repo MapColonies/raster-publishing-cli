@@ -14,16 +14,16 @@ describe('PublishCommand', function () {
   let cli: PublishCommandCliTrigger;
   let processExitMock: jest.SpyInstance;
 
-  const nowMock = new Date(10,10,3030);
+  const nowMock = new Date(10, 10, 3030);
 
-  beforeAll(() =>{
+  beforeAll(() => {
     jest.useFakeTimers().setSystemTime(nowMock);
   });
 
   beforeEach(function () {
     initConfig();
-    setConfigValue('publicMapServerURL','http://test.maps');
-    setConfigValue('publicMapServerURL','http://test.maps');
+    setConfigValue('publicMapServerURL', 'http://test.maps');
+    setConfigValue('publicMapServerURL', 'http://test.maps');
 
     processExitMock = jest.spyOn(global.process, 'exit');
     processExitMock.mockReturnValueOnce(undefined); //prevent cli exit from killing the test
@@ -48,9 +48,9 @@ describe('PublishCommand', function () {
     clearConfig();
   });
 
-  afterAll(() =>{
+  afterAll(() => {
     jest.useRealTimers();
-  })
+  });
 
   describe('Happy Path', function () {
     it('publish all layers from csv', async function () {
@@ -214,7 +214,7 @@ describe('PublishCommand', function () {
             ],
           },
         ],
-       
+
         [
           {
             metadata: { ...layer1Metadata, productType: ProductType.ORTHOPHOTO },

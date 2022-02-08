@@ -13,10 +13,10 @@ describe('PublishCommand', () => {
   const managerMock = {
     publishLayersFromCsv: publishLayersFromCsvMock,
   } as unknown as PublishManager;
-  const logger = jsLogger({enabled: false});
+  const logger = jsLogger({ enabled: false });
 
   beforeEach(() => {
-    command = new PublishCommand(logger,managerMock);
+    command = new PublishCommand(logger, managerMock);
   });
 
   afterEach(() => {
@@ -27,7 +27,7 @@ describe('PublishCommand', () => {
   describe('handler', () => {
     it('calls publishLayersFromCsv', async () => {
       publishLayersFromCsvMock.mockResolvedValue(undefined);
-      
+
       const args = { csvPath: 'csvPath' } as unknown as Arguments;
       await command.handler(args);
 

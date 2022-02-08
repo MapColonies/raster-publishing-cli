@@ -47,7 +47,7 @@ export class PublishManager {
   }
 
   public async publishLayersFromCsv(csvPath: string): Promise<void> {
-    const layerActions: (()=>Promise<unknown>)[] = [];
+    const layerActions: (() => Promise<unknown>)[] = [];
     this.logger.info(`reading csv: ${csvPath}.`);
     const csvPromise = new Promise<void>((resolve, reject) => {
       createReadStream(csvPath)
@@ -57,7 +57,7 @@ export class PublishManager {
         })
         .pipe(csv())
         .on('data', (data) => {
-          layerActions.push(async ()=>{
+          layerActions.push(async () => {
             await this.handleRow(data as Row);
           });
         })
@@ -73,18 +73,17 @@ export class PublishManager {
 
     try {
       await csvPromise;
-      const results = await Promise.allSettled(layerActions.map(async (action)=> action()));
-      results.forEach(res => {
-        if(res.status === 'rejected'){
+      const results = await Promise.allSettled(layerActions.map(async (action) => action()));
+      results.forEach((res) => {
+        if (res.status === 'rejected') {
           const err = res.reason as Error;
           this.logger.error(`a supplied layers failed to publish: ${err.message}`);
         }
-      })
-    } catch (err){
+      });
+    } catch (err) {
       const error = err as Error;
       this.logger.error(`failed to parse csv: ${error.message}`);
     }
-    
   }
 
   public async handleRow(row: Row): Promise<void> {
@@ -243,7 +242,7 @@ export class PublishManager {
       this.logger.error('invalid data, missing required filed: productVersion');
       throw new Error('invalid data');
     }
-    if (row.minHorizontalAccuracyCE90 === ''){
+    if (row.minHorizontalAccuracyCE90 === '') {
       this.logger.error('invalid data, missing required filed: minHorizontalAccuracyCE90');
       throw new Error('invalid data');
     }
