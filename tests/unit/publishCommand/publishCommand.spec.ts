@@ -1,3 +1,4 @@
+import jsLogger from '@map-colonies/js-logger';
 import { Arguments, Argv } from 'yargs';
 import { PublishCommand } from '../../../src/publishCommand/publishCommand';
 import { PublishManager } from '../../../src/publishCommand/publishManager';
@@ -12,9 +13,10 @@ describe('PublishCommand', () => {
   const managerMock = {
     publishLayersFromCsv: publishLayersFromCsvMock,
   } as unknown as PublishManager;
+  const logger = jsLogger({enabled: false});
 
   beforeEach(() => {
-    command = new PublishCommand(managerMock);
+    command = new PublishCommand(logger,managerMock);
   });
 
   afterEach(() => {
@@ -24,6 +26,8 @@ describe('PublishCommand', () => {
 
   describe('handler', () => {
     it('calls publishLayersFromCsv', async () => {
+      publishLayersFromCsvMock.mockResolvedValue(undefined);
+      
       const args = { csvPath: 'csvPath' } as unknown as Arguments;
       await command.handler(args);
 

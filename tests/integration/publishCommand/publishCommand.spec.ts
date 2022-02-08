@@ -5,6 +5,7 @@ import { getApp } from '../../../src/app';
 import { SERVICES } from '../../../src/common/constants';
 import { MapPublisherClient } from '../../../src/clients/mapPublisherClient';
 import { CatalogClient } from '../../../src/clients/catalogClient';
+import { configMock, initConfig, clearConfig, setConfigValue } from '../../mock/config';
 import { mapPublisherMock, mapPublishLayerMock } from '../../mock/clients/mapPublisherClient';
 import { catalogMock, catalogPublishMock } from '../../mock/clients/catalogClient';
 import { PublishCommandCliTrigger } from './helpers/CliTrigger';
@@ -13,14 +14,25 @@ describe('PublishCommand', function () {
   let cli: PublishCommandCliTrigger;
   let processExitMock: jest.SpyInstance;
 
+  const nowMock = new Date(10,10,3030);
+
+  beforeAll(() =>{
+    jest.useFakeTimers().setSystemTime(nowMock);
+  });
+
   beforeEach(function () {
+    initConfig();
+    setConfigValue('publicMapServerURL','http://test.maps');
+    setConfigValue('publicMapServerURL','http://test.maps');
+
     processExitMock = jest.spyOn(global.process, 'exit');
     processExitMock.mockReturnValueOnce(undefined); //prevent cli exit from killing the test
 
     const app = getApp({
       override: [
-        { token: SERVICES.LOGGER, provider: { useValue: jsLogger({ enabled: true }) } },
+        { token: SERVICES.LOGGER, provider: { useValue: jsLogger({ enabled: false }) } },
         { token: SERVICES.TRACER, provider: { useValue: trace.getTracer('testTracer') } },
+        { token: SERVICES.CONFIG, provider: { useValue: configMock } },
         { token: MapPublisherClient, provider: { useValue: mapPublisherMock } },
         { token: CatalogClient, provider: { useValue: catalogMock } },
       ],
@@ -33,7 +45,12 @@ describe('PublishCommand', function () {
   afterEach(() => {
     jest.resetAllMocks();
     jest.restoreAllMocks();
+    clearConfig();
   });
+
+  afterAll(() =>{
+    jest.useRealTimers();
+  })
 
   describe('Happy Path', function () {
     it('publish all layers from csv', async function () {
@@ -73,7 +90,7 @@ describe('PublishCommand', function () {
         description: 'testdesc1',
         sourceDateStart: new Date(Date.UTC(2011, 10, 5)),
         sourceDateEnd: new Date(Date.UTC(2011, 11, 5)),
-        resolution: 0.98,
+        resolution: 0.098,
         maxResolutionMeter: 100,
         footprint: {
           type: 'Polygon',
@@ -97,7 +114,7 @@ describe('PublishCommand', function () {
         srsName: 'WGS84GEO',
         type: RecordType.RECORD_RASTER,
         productBoundingBox: '-180,-90,180,90',
-        accuracyCE90: undefined,
+        accuracyCE90: 0.8,
         creationDate: undefined,
         includedInBests: undefined,
         ingestionDate: undefined,
@@ -105,7 +122,7 @@ describe('PublishCommand', function () {
         productSubType: undefined,
         rawProductData: undefined,
         rms: undefined,
-        updateDate: undefined,
+        updateDate: nowMock,
       };
       const layer2Metadata = {
         productId: 'testId2',
@@ -114,7 +131,7 @@ describe('PublishCommand', function () {
         productType: ProductType.VECTOR_BEST,
         sourceDateStart: new Date(Date.UTC(2011, 10, 5)),
         sourceDateEnd: new Date(Date.UTC(2011, 10, 5)),
-        resolution: 0.72,
+        resolution: 0.072,
         maxResolutionMeter: 300,
         footprint: {
           type: 'Polygon',
@@ -136,7 +153,7 @@ describe('PublishCommand', function () {
         srsName: 'WGS84GEO',
         type: RecordType.RECORD_RASTER,
         productBoundingBox: '-180,-90,180,90',
-        accuracyCE90: undefined,
+        accuracyCE90: 0.4,
         creationDate: undefined,
         includedInBests: undefined,
         ingestionDate: undefined,
@@ -144,34 +161,9 @@ describe('PublishCommand', function () {
         productSubType: undefined,
         rawProductData: undefined,
         rms: undefined,
-        updateDate: undefined,
+        updateDate: nowMock,
       };
       const expectedCatalogRequest = [
-        [
-          {
-            metadata: layer1Metadata,
-            links: [
-              {
-                description: '',
-                name: 'testId1-testVersion1-OrthophotoHistory',
-                protocol: 'WMS',
-                url: 'http://test.maps/service?REQUEST=GetCapabilities',
-              },
-              {
-                description: '',
-                name: 'testId1-testVersion1-OrthophotoHistory',
-                protocol: 'WMTS',
-                url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
-              },
-              {
-                description: '',
-                name: 'testId1-testVersion1-OrthophotoHistory',
-                protocol: 'WMTS_LAYER',
-                url: 'http://test.maps/wmts/testId1-testVersion1-OrthophotoHistory/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
-              },
-            ],
-          },
-        ],
         [
           {
             metadata: layer2Metadata,
@@ -199,6 +191,32 @@ describe('PublishCommand', function () {
         ],
         [
           {
+            metadata: layer1Metadata,
+            links: [
+              {
+                description: '',
+                name: 'testId1-testVersion1-OrthophotoHistory',
+                protocol: 'WMS',
+                url: 'http://test.maps/service?REQUEST=GetCapabilities',
+              },
+              {
+                description: '',
+                name: 'testId1-testVersion1-OrthophotoHistory',
+                protocol: 'WMTS',
+                url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
+              },
+              {
+                description: '',
+                name: 'testId1-testVersion1-OrthophotoHistory',
+                protocol: 'WMTS_LAYER',
+                url: 'http://test.maps/wmts/testId1-testVersion1-OrthophotoHistory/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+              },
+            ],
+          },
+        ],
+       
+        [
+          {
             metadata: { ...layer1Metadata, productType: ProductType.ORTHOPHOTO },
             links: [
               {
@@ -223,6 +241,9 @@ describe('PublishCommand', function () {
           },
         ],
       ];
+
+      console.log(JSON.stringify(catalogPublishMock.mock.calls));
+      console.log(JSON.stringify(catalogPublishMock.mock.calls));
 
       expect(mapPublishLayerMock).toHaveBeenCalledTimes(3);
       expect(mapPublishLayerMock.mock.calls).toEqual(expect.arrayContaining(expectedMapPublishingRequest));

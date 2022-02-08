@@ -11,7 +11,6 @@ import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
 import { MapPublisherClient } from '../clients/mapPublisherClient';
 import { CatalogClient } from '../clients/catalogClient';
 import { LinkBuilder } from './linksBuilder';
-import { resolveRef } from 'ajv/dist/compile';
 
 interface Row {
   productId: string;
@@ -190,7 +189,7 @@ export class PublishManager {
   private parseMetadata(row: Row): LayerMetadata {
     const metadata: LayerMetadata = {
       productId: row.productId,
-      accuracyCE90: row.minHorizontalAccuracyCE90 !== '' ? parseFloat(row.minHorizontalAccuracyCE90) : undefined,
+      accuracyCE90: parseFloat(row.minHorizontalAccuracyCE90),
       classification: row.classification,
       description: row.description !== '' ? row.description : undefined,
       footprint: JSON.parse(row.footprint) as GeoJSON,
@@ -210,6 +209,7 @@ export class PublishManager {
           : undefined,
       resolution: parseFloat(row.maxResolutionDeg),
       scale: row.scale != '' ? row.scale : undefined,
+      updateDate: new Date(),
       sensorType: [SensorType.UNDEFINED],
       sourceDateStart: this.parseLocalDate(row.sourceDateStart),
       sourceDateEnd: this.parseLocalDate(row.sourceDateEnd),
@@ -222,7 +222,6 @@ export class PublishManager {
       type: RecordType.RECORD_RASTER,
       creationDate: undefined,
       rms: undefined,
-      updateDate: undefined,
       productBoundingBox: undefined,
     };
     metadata.productBoundingBox = bbox(metadata.footprint).join(',');
@@ -242,6 +241,10 @@ export class PublishManager {
     }
     if (row.productVersion === '') {
       this.logger.error('invalid data, missing required filed: productVersion');
+      throw new Error('invalid data');
+    }
+    if (row.minHorizontalAccuracyCE90 === ''){
+      this.logger.error('invalid data, missing required filed: minHorizontalAccuracyCE90');
       throw new Error('invalid data');
     }
     if (row.classification === '') {

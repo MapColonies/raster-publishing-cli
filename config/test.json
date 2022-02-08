@@ -1,13 +1,1 @@
-{
-  "publicMapServerURL": "http://test.maps",
-  "linkTemplatesPath": "config/linkTemplates.template",
-  "csvOptions": {
-    "escape": "\"",
-    "headers": true,
-    "newline": "\n",
-    "quote": "\"",
-    "raw": false,
-    "separator": ",",
-    "strict": true
-  }
-}
+{}
