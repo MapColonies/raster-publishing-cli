@@ -13,5 +13,23 @@
       "url": "http://telemetryUrl/metrics",
       "interval": "3"
     }
+  },
+  "mapPublishingServiceURL": "http://localhost:8083",
+  "publicMapServerURL": "http://localhost:8084",
+  "catalogPublishingServiceURL": "http://localhost:8085",
+  "httpRetry": {
+    "attempts": 5,
+    "delay": "exponential",
+    "shouldResetTimeout": true
+  },
+  "linkTemplatesPath": "config/linkTemplates.template",
+  "csvOptions": {
+    "escape": "\"",
+    "headers": true,
+    "newline": "\n",
+    "quote": "\"",
+    "raw": false,
+    "separator": ",",
+    "strict": true
   }
 }

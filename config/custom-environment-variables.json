@@ -19,5 +19,38 @@
       "url": "TELEMETRY_METRICS_URL",
       "interval": "TELEMETRY_METRICS_INTERVAL"
     }
+  },
+  "mapPublishingServiceURL": "MAP_PUBLISHING_SERVICE_URL",
+  "publicMapServerURL": "PUBLIC_MAP_SERVER_URL",
+  "catalogPublishingServiceURL": "CATALOG_PUBLISHING_SERVICE_URL",
+  "httpRetry": {
+    "attempts": {
+      "__name": "HTTP_RETRY_ATTEMPTS",
+      "__format": "number"
+    },
+    "delay": "HTTP_RETRY_DELAY",
+    "shouldResetTimeout": {
+      "__name": "HTTP_RETRY_RESET_TIMEOUT",
+      "__format": "boolean"
+    }
+  },
+  "linkTemplatesPath": "LINKS_TEMPLATE_PATH",
+  "csvOptions": {
+    "escape": "CSV_OPTIONS_ESCAPE",
+    "headers": {
+      "__name": "CSV_OPTIONS_HEADERS",
+      "__format": "boolean"
+    },
+    "newline": "CSV_OPTIONS_NEW_LINE",
+    "quote": "CSV_OPTIONS",
+    "raw": {
+      "__name": "CSV_OPTIONS_RAW",
+      "__format": "boolean"
+    },
+    "separator": "CSV_OPTIONS_SEPARATOR",
+    "strict": {
+      "__name": "CSV_OPTIONS_STRICT",
+      "__format": "boolean"
+    }
   }
 }
