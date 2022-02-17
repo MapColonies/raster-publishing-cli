@@ -14,6 +14,11 @@ interface ICreateRecordResponse {
 export class CatalogClient extends HttpClient {
   public constructor(@inject(SERVICES.LOGGER) protected readonly logger: Logger, @inject(SERVICES.CONFIG) config: IConfig) {
     super(logger, config.get<string>('catalogPublishingServiceURL'), 'Catalog', config.get<IHttpRetryConfig>('httpRetry'));
+    if (config.get<boolean>('authentication.enabled')) {
+      const headers: Record<string, string> = {};
+      headers[config.get<string>('authentication.headerName')] = config.get<string>('authentication.headerValue');
+      this.axiosOptions.headers = headers;
+    }
   }
 
   public async exists(productId: string, productVersion?: string, productType?: string): Promise<boolean> {

@@ -51,6 +51,14 @@
     "strict": {
       "__name": "CSV_OPTIONS_STRICT",
       "__format": "boolean"
+    },
+    "authentication": {
+      "enabled": {
+        "__name": "MAP_COLONIES_AUTHENTICATION_ENABLED",
+        "__format": "boolean"
+      },
+      "headerName": "MAP_COLONIES_AUTHENTICATION_ENABLED_HEADER_NAME",
+      "headerValue": "MAP_COLONIES_AUTHENTICATION_ENABLED_HEADER_VALUE"
     }
   }
 }
