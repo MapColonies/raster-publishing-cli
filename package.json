@@ -42,8 +42,8 @@
   "dependencies": {
     "@map-colonies/error-types": "^1.1.0",
     "@map-colonies/js-logger": "^0.0.3",
-    "@map-colonies/mc-model-types": "^10.2.4",
-    "@map-colonies/mc-utils": "^1.4.0",
+    "@map-colonies/mc-model-types": "^10.2.5",
+    "@map-colonies/mc-utils": "^1.4.1",
     "@map-colonies/read-pkg": "0.0.1",
     "@map-colonies/telemetry": "3.0.0",
     "@opentelemetry/api": "1.0.1",

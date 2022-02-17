@@ -31,5 +31,10 @@
     "raw": false,
     "separator": ",",
     "strict": true
+  },
+  "authentication": {
+    "enabled": false,
+    "headerName": "",
+    "headerValue": ""
   }
 }

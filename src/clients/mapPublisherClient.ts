@@ -10,6 +10,11 @@ import { IPublishMapLayerRequest } from '../common/interfaces';
 export class MapPublisherClient extends HttpClient {
   public constructor(@inject(SERVICES.LOGGER) protected readonly logger: Logger, @inject(SERVICES.CONFIG) config: IConfig) {
     super(logger, config.get<string>('mapPublishingServiceURL'), 'MapPublisher', config.get<IHttpRetryConfig>('httpRetry'));
+    if (config.get<boolean>('authentication.enabled')) {
+      const headers: Record<string, string> = {};
+      headers[config.get<string>('authentication.headerName')] = config.get<string>('authentication.headerValue');
+      this.axiosOptions.headers = headers;
+    }
   }
 
   public async publishLayer(publishReq: IPublishMapLayerRequest): Promise<IPublishMapLayerRequest> {
