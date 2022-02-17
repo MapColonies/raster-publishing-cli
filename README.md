@@ -24,7 +24,7 @@ This is a cli tool to publish raster layers from prepared tiles
   - ```sourceDateEnd``` (required - format dd/mm/yyyy)
   - ```maxResolutionDeg``` (required)
   - ```maxResolutionMeter``` (required)
-  - ```minHorizontalAccuracyCE90``` (optional)
+  - ```minHorizontalAccuracyCE90``` (required)
   - ```footprint``` (required - format polygon/multipolygon geoJSON)
   - ```region``` (optional - values need to be separated by ```,```)
   - ```classification``` (required - must be valid map colonies raster classification)
