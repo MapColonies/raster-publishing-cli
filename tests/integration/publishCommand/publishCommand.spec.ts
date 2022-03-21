@@ -1,6 +1,6 @@
 import { trace } from '@opentelemetry/api';
 import jsLogger from '@map-colonies/js-logger';
-import { LayerMetadata, ProductType, RecordType, SensorType } from '@map-colonies/mc-model-types';
+import { LayerMetadata, ProductType, RecordType } from '@map-colonies/mc-model-types';
 import { getApp } from '../../../src/app';
 import { SERVICES } from '../../../src/common/constants';
 import { MapPublisherClient } from '../../../src/clients/mapPublisherClient';
@@ -90,7 +90,7 @@ describe('PublishCommand', function () {
         description: 'testdesc1',
         sourceDateStart: new Date(Date.UTC(2011, 10, 5)),
         sourceDateEnd: new Date(Date.UTC(2011, 11, 5)),
-        resolution: 0.098,
+        maxResolutionDeg: 0.098,
         maxResolutionMeter: 100,
         footprint: {
           type: 'Polygon',
@@ -104,17 +104,17 @@ describe('PublishCommand', function () {
             ],
           ],
         },
-        region: 'reg1,reg2',
+        region: ['reg1', 'reg2'],
         classification: '5',
-        scale: '10000',
+        scale: 10000,
         //generated fields
         producerName: 'IDFMU',
-        sensorType: [SensorType.UNDEFINED],
+        sensors: ['UNDEFINED'],
         srsId: '4326',
         srsName: 'WGS84GEO',
         type: RecordType.RECORD_RASTER,
         productBoundingBox: '-180,-90,180,90',
-        accuracyCE90: 0.8,
+        minHorizontalAccuracyCE90: 0.8,
         creationDate: undefined,
         includedInBests: undefined,
         ingestionDate: undefined,
@@ -131,7 +131,7 @@ describe('PublishCommand', function () {
         productType: ProductType.VECTOR_BEST,
         sourceDateStart: new Date(Date.UTC(2011, 10, 5)),
         sourceDateEnd: new Date(Date.UTC(2011, 10, 5)),
-        resolution: 0.072,
+        maxResolutionDeg: 0.072,
         maxResolutionMeter: 300,
         footprint: {
           type: 'Polygon',
@@ -148,12 +148,12 @@ describe('PublishCommand', function () {
         classification: '4',
         //generated fields
         producerName: 'IDFMU',
-        sensorType: ['UNDEFINED'],
+        sensors: ['UNDEFINED'],
         srsId: '4326',
         srsName: 'WGS84GEO',
         type: RecordType.RECORD_RASTER,
         productBoundingBox: '-180,-90,180,90',
-        accuracyCE90: 0.4,
+        minHorizontalAccuracyCE90: 0.4,
         creationDate: undefined,
         includedInBests: undefined,
         ingestionDate: undefined,
@@ -241,9 +241,6 @@ describe('PublishCommand', function () {
           },
         ],
       ];
-
-      console.log(JSON.stringify(catalogPublishMock.mock.calls));
-      console.log(JSON.stringify(catalogPublishMock.mock.calls));
 
       expect(mapPublishLayerMock).toHaveBeenCalledTimes(3);
       expect(mapPublishLayerMock.mock.calls).toEqual(expect.arrayContaining(expectedMapPublishingRequest));

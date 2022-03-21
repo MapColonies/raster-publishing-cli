@@ -4,7 +4,7 @@ import csv, { Options } from 'csv-parser';
 import bbox from '@turf/bbox';
 import { GeoJSON } from 'geojson';
 import { Logger } from '@map-colonies/js-logger';
-import { LayerMetadata, ProductType, RecordType, SensorType } from '@map-colonies/mc-model-types';
+import { LayerMetadata, ProductType, RecordType } from '@map-colonies/mc-model-types';
 import { ConflictError } from '@map-colonies/error-types';
 import { SERVICES } from '../common/constants';
 import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
@@ -188,7 +188,7 @@ export class PublishManager {
   private parseMetadata(row: Row): LayerMetadata {
     const metadata: LayerMetadata = {
       productId: row.productId,
-      accuracyCE90: parseFloat(row.minHorizontalAccuracyCE90),
+      minHorizontalAccuracyCE90: parseFloat(row.minHorizontalAccuracyCE90),
       classification: row.classification,
       description: row.description !== '' ? row.description : undefined,
       footprint: JSON.parse(row.footprint) as GeoJSON,
@@ -199,17 +199,13 @@ export class PublishManager {
       productType: row.productType as ProductType,
       productVersion: row.productVersion,
       region:
-        row.region != ''
-          ? //remove unwanted spaces
-            row.region
-              .split(',')
-              .map((str) => str.trim())
-              .join(',')
+        row.region != '' //remove unwanted spaces
+          ? row.region.split(',').map((str) => str.trim())
           : undefined,
-      resolution: parseFloat(row.maxResolutionDeg),
-      scale: row.scale != '' ? row.scale : undefined,
+      maxResolutionDeg: parseFloat(row.maxResolutionDeg),
+      scale: row.scale != '' ? parseInt(row.scale) : undefined,
       updateDate: new Date(),
-      sensorType: [SensorType.UNDEFINED],
+      sensors: ['UNDEFINED'],
       sourceDateStart: this.parseLocalDate(row.sourceDateStart),
       sourceDateEnd: this.parseLocalDate(row.sourceDateEnd),
       srsId: '4326',
