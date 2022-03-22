@@ -109,7 +109,7 @@ describe('PublishCommand', function () {
         scale: 10000,
         //generated fields
         producerName: 'IDFMU',
-        sensors: ['UNDEFINED'],
+        sensors: ['UNDEFINED', 'testSensor'],
         srsId: '4326',
         srsName: 'WGS84GEO',
         type: RecordType.RECORD_RASTER,

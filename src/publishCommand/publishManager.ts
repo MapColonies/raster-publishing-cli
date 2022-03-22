@@ -26,6 +26,7 @@ interface Row {
   minHorizontalAccuracyCE90: string;
   footprint: string;
   region: string;
+  sensors: string;
   classification: string;
   scale: string;
   tilesPath: string;
@@ -202,10 +203,13 @@ export class PublishManager {
         row.region != '' //remove unwanted spaces
           ? row.region.split(',').map((str) => str.trim())
           : undefined,
+      sensors: 
+          row.sensors != '' //remove unwanted spaces
+          ? row.sensors.split(',').map((str) => str.trim())
+          : ['UNDEFINED'],
       maxResolutionDeg: parseFloat(row.maxResolutionDeg),
       scale: row.scale != '' ? parseInt(row.scale) : undefined,
       updateDate: new Date(),
-      sensors: ['UNDEFINED'],
       sourceDateStart: this.parseLocalDate(row.sourceDateStart),
       sourceDateEnd: this.parseLocalDate(row.sourceDateEnd),
       srsId: '4326',
