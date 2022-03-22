@@ -28,7 +28,7 @@ This is a cli tool to publish raster layers from prepared tiles
   - ```footprint``` (required - format polygon/multipolygon geoJSON)
   - ```region``` (optional - values need to be separated by ```,```)
   - ```classification``` (required - must be valid map colonies raster classification)
-  - ```sensors``` (required - values need to be separated by ```,```)
+  - ```sensors``` (optional - values need to be separated by ```,```. if empty, default value is set as 'UNDEFINED')
   - ```scale``` (optional)
   - ```tilesPath``` (required - map colonies deployment relative layer tiles path)
   - ```storageProvider``` (required - tiles source type, must be ```FS``` or ```S3```)
