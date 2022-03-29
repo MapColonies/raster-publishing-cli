@@ -59,24 +59,16 @@ describe('PublishCommand', function () {
       const expectedMapPublishingRequest = [
         [
           {
-            name: 'testId1-testVersion1-OrthophotoHistory',
-            tilesPath: 'testId1/testVersion1/OrthophotoHistory',
+            name: 'testId1-OrthophotoHistory',
+            tilesPath: 'testId1/OrthophotoHistory',
             maxZoomLevel: 20,
             cacheType: 'file',
           },
         ],
         [
           {
-            name: 'testId1-Orthophoto',
-            tilesPath: 'testId1/testVersion1/OrthophotoHistory',
-            maxZoomLevel: 20,
-            cacheType: 'file',
-          },
-        ],
-        [
-          {
-            name: 'testId2-testVersion2-VectorBest',
-            tilesPath: 'testId2/testVersion2/VectorBest',
+            name: 'testId2-VectorBest',
+            tilesPath: 'testId2/VectorBest',
             maxZoomLevel: 20,
             cacheType: 's3',
           },
@@ -170,21 +162,21 @@ describe('PublishCommand', function () {
             links: [
               {
                 description: '',
-                name: 'testId2-testVersion2-VectorBest',
+                name: 'testId2-VectorBest',
                 protocol: 'WMS',
                 url: 'http://test.maps/service?REQUEST=GetCapabilities',
               },
               {
                 description: '',
-                name: 'testId2-testVersion2-VectorBest',
+                name: 'testId2-VectorBest',
                 protocol: 'WMTS',
                 url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
               },
               {
                 description: '',
-                name: 'testId2-testVersion2-VectorBest',
+                name: 'testId2-VectorBest',
                 protocol: 'WMTS_LAYER',
-                url: 'http://test.maps/wmts/testId2-testVersion2-VectorBest/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+                url: 'http://test.maps/wmts/testId2-VectorBest/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
               },
             ],
           },
@@ -195,56 +187,30 @@ describe('PublishCommand', function () {
             links: [
               {
                 description: '',
-                name: 'testId1-testVersion1-OrthophotoHistory',
+                name: 'testId1-OrthophotoHistory',
                 protocol: 'WMS',
                 url: 'http://test.maps/service?REQUEST=GetCapabilities',
               },
               {
                 description: '',
-                name: 'testId1-testVersion1-OrthophotoHistory',
+                name: 'testId1-OrthophotoHistory',
                 protocol: 'WMTS',
                 url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
               },
               {
                 description: '',
-                name: 'testId1-testVersion1-OrthophotoHistory',
+                name: 'testId1-OrthophotoHistory',
                 protocol: 'WMTS_LAYER',
-                url: 'http://test.maps/wmts/testId1-testVersion1-OrthophotoHistory/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
-              },
-            ],
-          },
-        ],
-
-        [
-          {
-            metadata: { ...layer1Metadata, productType: ProductType.ORTHOPHOTO },
-            links: [
-              {
-                description: '',
-                name: 'testId1-Orthophoto',
-                protocol: 'WMS',
-                url: 'http://test.maps/service?REQUEST=GetCapabilities',
-              },
-              {
-                description: '',
-                name: 'testId1-Orthophoto',
-                protocol: 'WMTS',
-                url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
-              },
-              {
-                description: '',
-                name: 'testId1-Orthophoto',
-                protocol: 'WMTS_LAYER',
-                url: 'http://test.maps/wmts/testId1-Orthophoto/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+                url: 'http://test.maps/wmts/testId1-OrthophotoHistory/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
               },
             ],
           },
         ],
       ];
 
-      expect(mapPublishLayerMock).toHaveBeenCalledTimes(3);
+      expect(mapPublishLayerMock).toHaveBeenCalledTimes(2);
       expect(mapPublishLayerMock.mock.calls).toEqual(expect.arrayContaining(expectedMapPublishingRequest));
-      expect(catalogPublishMock).toHaveBeenCalledTimes(3);
+      expect(catalogPublishMock).toHaveBeenCalledTimes(2);
       expect(catalogPublishMock.mock.calls).toEqual(expect.arrayContaining(expectedCatalogRequest));
     });
   });

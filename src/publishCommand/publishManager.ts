@@ -93,7 +93,6 @@ export class PublishManager {
     await this.validateRunConditions(metadata);
     const layerName = this.getMapServingLayerName(
       metadata.productId as string,
-      metadata.productVersion as string,
       metadata.productType as ProductType
     );
     const publicMapServerUrl = this.config.get<string>('publicMapServerURL');
@@ -123,66 +122,33 @@ export class PublishManager {
       name: layerName,
       tilesPath: row.tilesPath,
     });
-    // todo: In update scenario need to change the logic to support history and update unified files
-    if (metadata.productType === ProductType.ORTHOPHOTO_HISTORY) {
-      const clonedLayer = { ...metadata };
-      clonedLayer.productType = ProductType.ORTHOPHOTO;
-      const unifiedLayerName = this.getMapServingLayerName(
-        clonedLayer.productId as string,
-        clonedLayer.productVersion as string,
-        clonedLayer.productType
-      );
-      await this.mapPublisher.publishLayer({
-        cacheType: cacheType,
-        maxZoomLevel: 20,
-        name: unifiedLayerName,
-        tilesPath: row.tilesPath,
-      });
-      await this.catalog.publish({
-        metadata: clonedLayer,
-        links: this.linkBuilder.createLinks({
-          layerName: unifiedLayerName,
-          serverUrl: publicMapServerUrl,
-        }),
-      });
-    }
   }
 
   private async validateRunConditions(metadata: LayerMetadata): Promise<void> {
     const resourceId = metadata.productId as string;
     const version = metadata.productVersion as string;
     const productType = metadata.productType as ProductType;
-
-    // todo: version 1.0 condition defines only one material with the same ID, no history parts are allowed
-    if (productType === ProductType.ORTHOPHOTO_HISTORY) {
-      await this.validateNotExistsInCatalog(resourceId, undefined, ProductType.ORTHOPHOTO);
-    }
-    await this.validateNotExistsInCatalog(resourceId, version, productType);
-    await this.validateNotExistsInMapServer(resourceId, version, productType);
+    await this.validateNotExistsInCatalog(resourceId, productType);
+    await this.validateNotExistsInMapServer(resourceId, productType);
   }
 
-  private async validateNotExistsInMapServer(productId: string, productVersion: string, productType: ProductType): Promise<void> {
-    const layerName = this.getMapServingLayerName(productId, productVersion, productType);
+  private async validateNotExistsInMapServer(productId: string, productType: ProductType): Promise<void> {
+    const layerName = this.getMapServingLayerName(productId, productType);
     const existsInMapServer = await this.mapPublisher.exists(layerName);
     if (existsInMapServer) {
       throw new ConflictError(`layer ${layerName}, already exists on mapProxy`);
     }
   }
 
-  private async validateNotExistsInCatalog(resourceId: string, version?: string, productType?: ProductType): Promise<void> {
-    const existsInCatalog = await this.catalog.exists(resourceId, version, productType);
+  private async validateNotExistsInCatalog(resourceId: string, productType?: ProductType): Promise<void> {
+    const existsInCatalog = await this.catalog.exists(resourceId, productType);
     if (existsInCatalog) {
-      throw new ConflictError(`layer id: ${resourceId} version: ${version as string} type: ${productType as string}, already exists in catalog`);
+      throw new ConflictError(`layer id: ${resourceId} type: ${productType as string}, already exists in catalog`);
     }
   }
 
-  private getMapServingLayerName(productId: string, productVersion: string, productType: ProductType): string {
-    let layerName = null;
-    if (productType === ProductType.ORTHOPHOTO) {
-      layerName = `${productId}-${productType}`;
-    } else {
-      layerName = `${productId}-${productVersion}-${productType as string}`;
-    }
+  private getMapServingLayerName(productId: string, productType: ProductType): string {
+    const layerName = `${productId}-${productType}`;
     return layerName;
   }
 
