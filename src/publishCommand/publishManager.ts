@@ -91,10 +91,7 @@ export class PublishManager {
     this.validateRow(row);
     const metadata = this.parseMetadata(row);
     await this.validateRunConditions(metadata);
-    const layerName = this.getMapServingLayerName(
-      metadata.productId as string,
-      metadata.productType as ProductType
-    );
+    const layerName = this.getMapServingLayerName(metadata.productId as string, metadata.productType as ProductType);
     const publicMapServerUrl = this.config.get<string>('publicMapServerURL');
     let cacheType: PublishedMapLayerCacheType;
     switch (row.storageProvider.toLowerCase()) {
@@ -126,7 +123,6 @@ export class PublishManager {
 
   private async validateRunConditions(metadata: LayerMetadata): Promise<void> {
     const resourceId = metadata.productId as string;
-    const version = metadata.productVersion as string;
     const productType = metadata.productType as ProductType;
     await this.validateNotExistsInCatalog(resourceId, productType);
     await this.validateNotExistsInMapServer(resourceId, productType);
@@ -169,8 +165,8 @@ export class PublishManager {
         row.region != '' //remove unwanted spaces
           ? row.region.split(',').map((str) => str.trim())
           : undefined,
-      sensors: 
-          row.sensors != '' //remove unwanted spaces
+      sensors:
+        row.sensors != '' //remove unwanted spaces
           ? row.sensors.split(',').map((str) => str.trim())
           : ['UNDEFINED'],
       maxResolutionDeg: parseFloat(row.maxResolutionDeg),
