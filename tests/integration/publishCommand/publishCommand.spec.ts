@@ -1,6 +1,6 @@
 import { trace } from '@opentelemetry/api';
 import jsLogger from '@map-colonies/js-logger';
-import { LayerMetadata, ProductType, RecordType, SensorType } from '@map-colonies/mc-model-types';
+import { LayerMetadata, ProductType, RecordType } from '@map-colonies/mc-model-types';
 import { getApp } from '../../../src/app';
 import { SERVICES } from '../../../src/common/constants';
 import { MapPublisherClient } from '../../../src/clients/mapPublisherClient';
@@ -59,24 +59,16 @@ describe('PublishCommand', function () {
       const expectedMapPublishingRequest = [
         [
           {
-            name: 'testId1-testVersion1-OrthophotoHistory',
-            tilesPath: 'testId1/testVersion1/OrthophotoHistory',
+            name: 'testId1-OrthophotoHistory',
+            tilesPath: 'testId1/OrthophotoHistory',
             maxZoomLevel: 20,
             cacheType: 'file',
           },
         ],
         [
           {
-            name: 'testId1-Orthophoto',
-            tilesPath: 'testId1/testVersion1/OrthophotoHistory',
-            maxZoomLevel: 20,
-            cacheType: 'file',
-          },
-        ],
-        [
-          {
-            name: 'testId2-testVersion2-VectorBest',
-            tilesPath: 'testId2/testVersion2/VectorBest',
+            name: 'testId2-VectorBest',
+            tilesPath: 'testId2/VectorBest',
             maxZoomLevel: 20,
             cacheType: 's3',
           },
@@ -90,7 +82,7 @@ describe('PublishCommand', function () {
         description: 'testdesc1',
         sourceDateStart: new Date(Date.UTC(2011, 10, 5)),
         sourceDateEnd: new Date(Date.UTC(2011, 11, 5)),
-        resolution: 0.098,
+        maxResolutionDeg: 0.098,
         maxResolutionMeter: 100,
         footprint: {
           type: 'Polygon',
@@ -104,17 +96,17 @@ describe('PublishCommand', function () {
             ],
           ],
         },
-        region: 'reg1,reg2',
+        region: ['reg1', 'reg2'],
         classification: '5',
-        scale: '10000',
+        scale: 10000,
         //generated fields
         producerName: 'IDFMU',
-        sensorType: [SensorType.UNDEFINED],
+        sensors: ['UNDEFINED', 'testSensor'],
         srsId: '4326',
         srsName: 'WGS84GEO',
         type: RecordType.RECORD_RASTER,
         productBoundingBox: '-180,-90,180,90',
-        accuracyCE90: 0.8,
+        minHorizontalAccuracyCE90: 0.8,
         creationDate: undefined,
         includedInBests: undefined,
         ingestionDate: undefined,
@@ -131,7 +123,7 @@ describe('PublishCommand', function () {
         productType: ProductType.VECTOR_BEST,
         sourceDateStart: new Date(Date.UTC(2011, 10, 5)),
         sourceDateEnd: new Date(Date.UTC(2011, 10, 5)),
-        resolution: 0.072,
+        maxResolutionDeg: 0.072,
         maxResolutionMeter: 300,
         footprint: {
           type: 'Polygon',
@@ -148,12 +140,12 @@ describe('PublishCommand', function () {
         classification: '4',
         //generated fields
         producerName: 'IDFMU',
-        sensorType: ['UNDEFINED'],
+        sensors: ['UNDEFINED'],
         srsId: '4326',
         srsName: 'WGS84GEO',
         type: RecordType.RECORD_RASTER,
         productBoundingBox: '-180,-90,180,90',
-        accuracyCE90: 0.4,
+        minHorizontalAccuracyCE90: 0.4,
         creationDate: undefined,
         includedInBests: undefined,
         ingestionDate: undefined,
@@ -170,21 +162,21 @@ describe('PublishCommand', function () {
             links: [
               {
                 description: '',
-                name: 'testId2-testVersion2-VectorBest',
+                name: 'testId2-VectorBest',
                 protocol: 'WMS',
                 url: 'http://test.maps/service?REQUEST=GetCapabilities',
               },
               {
                 description: '',
-                name: 'testId2-testVersion2-VectorBest',
+                name: 'testId2-VectorBest',
                 protocol: 'WMTS',
                 url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
               },
               {
                 description: '',
-                name: 'testId2-testVersion2-VectorBest',
+                name: 'testId2-VectorBest',
                 protocol: 'WMTS_LAYER',
-                url: 'http://test.maps/wmts/testId2-testVersion2-VectorBest/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+                url: 'http://test.maps/wmts/testId2-VectorBest/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
               },
             ],
           },
@@ -195,59 +187,30 @@ describe('PublishCommand', function () {
             links: [
               {
                 description: '',
-                name: 'testId1-testVersion1-OrthophotoHistory',
+                name: 'testId1-OrthophotoHistory',
                 protocol: 'WMS',
                 url: 'http://test.maps/service?REQUEST=GetCapabilities',
               },
               {
                 description: '',
-                name: 'testId1-testVersion1-OrthophotoHistory',
+                name: 'testId1-OrthophotoHistory',
                 protocol: 'WMTS',
                 url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
               },
               {
                 description: '',
-                name: 'testId1-testVersion1-OrthophotoHistory',
+                name: 'testId1-OrthophotoHistory',
                 protocol: 'WMTS_LAYER',
-                url: 'http://test.maps/wmts/testId1-testVersion1-OrthophotoHistory/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
-              },
-            ],
-          },
-        ],
-
-        [
-          {
-            metadata: { ...layer1Metadata, productType: ProductType.ORTHOPHOTO },
-            links: [
-              {
-                description: '',
-                name: 'testId1-Orthophoto',
-                protocol: 'WMS',
-                url: 'http://test.maps/service?REQUEST=GetCapabilities',
-              },
-              {
-                description: '',
-                name: 'testId1-Orthophoto',
-                protocol: 'WMTS',
-                url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
-              },
-              {
-                description: '',
-                name: 'testId1-Orthophoto',
-                protocol: 'WMTS_LAYER',
-                url: 'http://test.maps/wmts/testId1-Orthophoto/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
+                url: 'http://test.maps/wmts/testId1-OrthophotoHistory/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
               },
             ],
           },
         ],
       ];
 
-      console.log(JSON.stringify(catalogPublishMock.mock.calls));
-      console.log(JSON.stringify(catalogPublishMock.mock.calls));
-
-      expect(mapPublishLayerMock).toHaveBeenCalledTimes(3);
+      expect(mapPublishLayerMock).toHaveBeenCalledTimes(2);
       expect(mapPublishLayerMock.mock.calls).toEqual(expect.arrayContaining(expectedMapPublishingRequest));
-      expect(catalogPublishMock).toHaveBeenCalledTimes(3);
+      expect(catalogPublishMock).toHaveBeenCalledTimes(2);
       expect(catalogPublishMock.mock.calls).toEqual(expect.arrayContaining(expectedCatalogRequest));
     });
   });
