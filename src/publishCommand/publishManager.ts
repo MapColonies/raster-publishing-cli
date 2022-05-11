@@ -137,7 +137,7 @@ export class PublishManager {
   }
 
   private async validateNotExistsInCatalog(resourceId: string, productType?: ProductType): Promise<void> {
-    const existsInCatalog = await this.catalog.exists(resourceId, productType);
+    const existsInCatalog = await this.catalog.exists(resourceId, undefined, productType);
     if (existsInCatalog) {
       throw new ConflictError(`layer id: ${resourceId} type: ${productType as string}, already exists in catalog`);
     }
