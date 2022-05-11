@@ -105,7 +105,7 @@ export class PublishManager {
       default:
         this.logger.error(`invalid storage provider: ${row.storageProvider}. valid values: "FS", "S3"`);
         throw new Error('invalid storage provider');
-      }
+    }
     await this.catalog.publish({
       metadata: metadata,
       links: this.linkBuilder.createLinks({
