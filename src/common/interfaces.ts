@@ -8,7 +8,6 @@ export interface IConfig {
 export interface IPublishMapLayerRequest {
   name: string;
   tilesPath: string;
-  maxZoomLevel: number;
   cacheType: PublishedMapLayerCacheType;
 }
 

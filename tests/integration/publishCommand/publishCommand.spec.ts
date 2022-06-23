@@ -61,7 +61,6 @@ describe('PublishCommand', function () {
           {
             name: 'testId1-OrthophotoHistory',
             tilesPath: 'testId1/OrthophotoHistory',
-            maxZoomLevel: 20,
             cacheType: 'file',
           },
         ],
@@ -69,7 +68,6 @@ describe('PublishCommand', function () {
           {
             name: 'testId2-VectorBest',
             tilesPath: 'testId2/VectorBest',
-            maxZoomLevel: 20,
             cacheType: 's3',
           },
         ],
