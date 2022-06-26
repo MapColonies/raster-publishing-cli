@@ -115,7 +115,6 @@ export class PublishManager {
     });
     await this.mapPublisher.publishLayer({
       cacheType: cacheType,
-      maxZoomLevel: 20,
       name: layerName,
       tilesPath: row.tilesPath,
     });
