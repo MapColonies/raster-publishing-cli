@@ -1,7 +1,7 @@
 # local configurations
 config/*local*.json
 Schema
-
+local.json
 # Logs
 logs
 *.log

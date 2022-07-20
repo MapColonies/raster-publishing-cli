@@ -148,7 +148,7 @@ export class PublishManager {
   }
 
   private parseMetadata(row: Row): LayerMetadata {
-    const metadata: LayerMetadata = {
+    const metadata = {
       productId: row.productId,
       minHorizontalAccuracyCE90: parseFloat(row.minHorizontalAccuracyCE90),
       classification: row.classification,
@@ -170,7 +170,6 @@ export class PublishManager {
           : ['UNDEFINED'],
       maxResolutionDeg: parseFloat(row.maxResolutionDeg),
       scale: row.scale != '' ? parseInt(row.scale) : undefined,
-      updateDate: new Date(),
       sourceDateStart: this.parseLocalDate(row.sourceDateStart),
       sourceDateEnd: this.parseLocalDate(row.sourceDateEnd),
       srsId: '4326',
@@ -183,7 +182,7 @@ export class PublishManager {
       creationDate: undefined,
       rms: undefined,
       productBoundingBox: undefined,
-    };
+    } as unknown as LayerMetadata;
     metadata.productBoundingBox = bbox(metadata.footprint).join(',');
     return metadata;
   }
