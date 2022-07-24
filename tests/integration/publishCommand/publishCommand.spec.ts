@@ -72,7 +72,7 @@ describe('PublishCommand', function () {
           },
         ],
       ];
-      const layer1Metadata: LayerMetadata = {
+      const layer1Metadata = {
         productId: 'testId1',
         productName: 'test1',
         productVersion: 'testVersion1',
@@ -112,8 +112,7 @@ describe('PublishCommand', function () {
         productSubType: undefined,
         rawProductData: undefined,
         rms: undefined,
-        updateDate: nowMock,
-      };
+      } as unknown as LayerMetadata;
       const layer2Metadata = {
         productId: 'testId2',
         productName: 'test2',
@@ -151,7 +150,6 @@ describe('PublishCommand', function () {
         productSubType: undefined,
         rawProductData: undefined,
         rms: undefined,
-        updateDate: nowMock,
       };
       const expectedCatalogRequest = [
         [
