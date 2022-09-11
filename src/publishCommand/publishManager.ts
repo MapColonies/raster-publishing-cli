@@ -78,7 +78,7 @@ export class PublishManager {
       results.forEach((res) => {
         if (res.status === 'rejected') {
           const err = res.reason as Error;
-          this.logger.error(`a supplied layers failed to publish: ${err.message}`);
+          this.logger.error(res, `a supplied layers failed to publish: ${err.message}`);
         }
       });
     } catch (err) {
@@ -88,36 +88,42 @@ export class PublishManager {
   }
 
   public async handleRow(row: Row): Promise<void> {
-    this.validateRow(row);
-    const metadata = this.parseMetadata(row);
-    await this.validateRunConditions(metadata);
-    const layerName = this.getMapServingLayerName(metadata.productId as string, metadata.productType as ProductType);
-    const publicMapServerUrl = this.config.get<string>('publicMapServerURL');
-    let cacheType: PublishedMapLayerCacheType;
-    switch (row.storageProvider.toLowerCase()) {
-      case 'fs':
-      case 'file':
-        cacheType = PublishedMapLayerCacheType.FS;
-        break;
-      case 's3':
-        cacheType = PublishedMapLayerCacheType.S3;
-        break;
-      default:
-        this.logger.error(`invalid storage provider: ${row.storageProvider}. valid values: "FS", "S3"`);
-        throw new Error('invalid storage provider');
+    this.logger.info(row, "Call handle row for data:");
+    try {
+      this.validateRow(row);
+      const metadata = this.parseMetadata(row);
+      await this.validateRunConditions(metadata);
+      const layerName = this.getMapServingLayerName(metadata.productId as string, metadata.productType as ProductType);
+      const publicMapServerUrl = this.config.get<string>('publicMapServerURL');
+      let cacheType: PublishedMapLayerCacheType;
+      switch (row.storageProvider.toLowerCase()) {
+        case 'fs':
+        case 'file':
+          cacheType = PublishedMapLayerCacheType.FS;
+          break;
+        case 's3':
+          cacheType = PublishedMapLayerCacheType.S3;
+          break;
+        default:
+          this.logger.error(`invalid storage provider: ${row.storageProvider}. valid values: "FS", "S3"`);
+          throw new Error('invalid storage provider');
+      }
+      await this.catalog.publish({
+        metadata: metadata,
+        links: this.linkBuilder.createLinks({
+          layerName: layerName,
+          serverUrl: publicMapServerUrl,
+        }),
+      });
+      await this.mapPublisher.publishLayer({
+        cacheType: cacheType,
+        name: layerName,
+        tilesPath: row.tilesPath,
+      });
+    } catch (exception) {
+      this.logger.error(row, "Failed to handle row for data:");
+      throw exception;
     }
-    await this.catalog.publish({
-      metadata: metadata,
-      links: this.linkBuilder.createLinks({
-        layerName: layerName,
-        serverUrl: publicMapServerUrl,
-      }),
-    });
-    await this.mapPublisher.publishLayer({
-      cacheType: cacheType,
-      name: layerName,
-      tilesPath: row.tilesPath,
-    });
   }
 
   private async validateRunConditions(metadata: LayerMetadata): Promise<void> {

@@ -8,8 +8,20 @@
   {
     "name": "{{layerName}}",
     "description": "",
+    "protocol": "WMS_BASE",
+    "url": "{{serverUrl}}/wms"
+  },
+  {
+    "name": "{{layerName}}",
+    "description": "",
     "protocol": "WMTS",
     "url": "{{serverUrl}}/wmts/1.0.0/WMTSCapabilities.xml"
+  },
+  {
+    "name": "{{layerName}}",
+    "description": "",
+    "protocol": "WMTS_BASE",
+    "url": "{{serverUrl}}/wmts"
   },
   {
     "name": "{{layerName}}",
