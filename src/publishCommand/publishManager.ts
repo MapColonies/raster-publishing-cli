@@ -88,7 +88,7 @@ export class PublishManager {
   }
 
   public async handleRow(row: Row): Promise<void> {
-    this.logger.info(row, "Call handle row for data:");
+    this.logger.info(row, 'Call handle row for data:');
     try {
       this.validateRow(row);
       const metadata = this.parseMetadata(row);
@@ -121,7 +121,7 @@ export class PublishManager {
         tilesPath: row.tilesPath,
       });
     } catch (exception) {
-      this.logger.error(row, "Failed to handle row for data:");
+      this.logger.error(row, 'Failed to handle row for data:');
       throw exception;
     }
   }
