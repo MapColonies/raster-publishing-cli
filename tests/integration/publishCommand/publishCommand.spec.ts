@@ -165,8 +165,20 @@ describe('PublishCommand', function () {
               {
                 description: '',
                 name: 'testId2-VectorBest',
+                protocol: 'WMS_BASE',
+                url: 'http://test.maps/wms'
+              },
+              {
+                description: '',
+                name: 'testId2-VectorBest',
                 protocol: 'WMTS',
                 url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
+              },
+              {
+                description: '',
+                name: 'testId2-VectorBest',
+                protocol: "WMTS_BASE",
+                url: 'http://test.maps/wmts'
               },
               {
                 description: '',
@@ -190,8 +202,20 @@ describe('PublishCommand', function () {
               {
                 description: '',
                 name: 'testId1-OrthophotoHistory',
+                protocol: 'WMS_BASE',
+                url: 'http://test.maps/wms'
+              },
+              {
+                description: '',
+                name: 'testId1-OrthophotoHistory',
                 protocol: 'WMTS',
                 url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
+              },
+              {
+                description: '',
+                name: 'testId1-OrthophotoHistory',
+                protocol: 'WMTS_BASE',
+                url: 'http://test.maps/wmts'
               },
               {
                 description: '',
