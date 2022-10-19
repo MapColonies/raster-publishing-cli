@@ -7,7 +7,7 @@ import { Logger } from '@map-colonies/js-logger';
 import { LayerMetadata, ProductType, RecordType } from '@map-colonies/mc-model-types';
 import { ConflictError } from '@map-colonies/error-types';
 import { SERVICES } from '../common/constants';
-import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
+import { IConfig, PublishedMapLayerCacheType, TileFormats } from '../common/interfaces';
 import { MapPublisherClient } from '../clients/mapPublisherClient';
 import { CatalogClient } from '../clients/catalogClient';
 import { LinkBuilder } from './linksBuilder';
@@ -31,6 +31,7 @@ interface Row {
   scale: string;
   tilesPath: string;
   storageProvider: string;
+  format: string;
 }
 
 @singleton()
@@ -59,6 +60,7 @@ export class PublishManager {
         .pipe(csv())
         .on('data', (data) => {
           layerActions.push(async () => {
+            console.log(data)
             await this.handleRow(data as Row);
           });
         })
@@ -92,7 +94,7 @@ export class PublishManager {
     try {
       this.validateRow(row);
       const metadata = this.parseMetadata(row);
-      await this.validateRunConditions(metadata);
+      // await this.validateRunConditions(metadata);
       const layerName = this.getMapServingLayerName(metadata.productId as string, metadata.productType as ProductType);
       const publicMapServerUrl = this.config.get<string>('publicMapServerURL');
       let cacheType: PublishedMapLayerCacheType;
@@ -108,17 +110,18 @@ export class PublishManager {
           this.logger.error(`invalid storage provider: ${row.storageProvider}. valid values: "FS", "S3"`);
           throw new Error('invalid storage provider');
       }
-      await this.catalog.publish({
-        metadata: metadata,
-        links: this.linkBuilder.createLinks({
-          layerName: layerName,
-          serverUrl: publicMapServerUrl,
-        }),
-      });
+      // await this.catalog.publish({
+      //   metadata: metadata,
+      //   links: this.linkBuilder.createLinks({
+      //     layerName: layerName,
+      //     serverUrl: publicMapServerUrl,
+      //   }),
+      // });
       await this.mapPublisher.publishLayer({
         cacheType: cacheType,
         name: layerName,
         tilesPath: row.tilesPath,
+        format: row.format as TileFormats
       });
     } catch (exception) {
       this.logger.error(row, 'Failed to handle row for data:');
@@ -242,6 +245,14 @@ export class PublishManager {
     }
     if (row.tilesPath === '') {
       this.logger.error('invalid data, missing required filed: tilesPath');
+      throw new Error('invalid data');
+    }
+    if (row.format === '') {
+      this.logger.error('invalid data, missing required filed: format');
+      throw new Error('invalid data');
+    }
+    if (row.format !== TileFormats.PNG && row.format !== TileFormats.JPEG) {
+      this.logger.error(`invalid data, only acceptable values: ${TileFormats.PNG} or ${TileFormats.JPEG}`);
       throw new Error('invalid data');
     }
   }

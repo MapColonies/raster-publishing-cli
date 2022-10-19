@@ -5,10 +5,16 @@ export interface IConfig {
   has: (setting: string) => boolean;
 }
 
+export enum TileFormats {
+  JPEG = 'image/jpeg',
+  PNG = 'image/png',
+}
+
 export interface IPublishMapLayerRequest {
   name: string;
   tilesPath: string;
   cacheType: PublishedMapLayerCacheType;
+  format: TileFormats;
 }
 
 export enum PublishedMapLayerCacheType {
