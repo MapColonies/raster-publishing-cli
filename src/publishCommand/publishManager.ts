@@ -7,7 +7,7 @@ import { Logger } from '@map-colonies/js-logger';
 import { LayerMetadata, ProductType, RecordType } from '@map-colonies/mc-model-types';
 import { ConflictError } from '@map-colonies/error-types';
 import { SERVICES } from '../common/constants';
-import { IConfig, PublishedMapLayerCacheType, TileFormats } from '../common/interfaces';
+import { IConfig, PublishedMapLayerCacheType, TileFormat } from '../common/interfaces';
 import { MapPublisherClient } from '../clients/mapPublisherClient';
 import { CatalogClient } from '../clients/catalogClient';
 import { LinkBuilder } from './linksBuilder';
@@ -122,7 +122,7 @@ export class PublishManager {
         cacheType: cacheType,
         name: layerName,
         tilesPath: row.tilesPath,
-        format: row.format as TileFormats,
+        format: row.format as TileFormat,
       });
     } catch (exception) {
       this.logger.error(row, 'Failed to handle row for data:');
@@ -254,8 +254,8 @@ export class PublishManager {
       this.logger.error('invalid data, missing required field: format');
       throw new Error('invalid data');
     }
-    if (row.format !== TileFormats.PNG && row.format !== TileFormats.JPEG) {
-      this.logger.error(`invalid data, only acceptable values: ${TileFormats.PNG} or ${TileFormats.JPEG}`);
+    if (row.format !== TileFormat.PNG && row.format !== TileFormat.JPEG) {
+      this.logger.error(`invalid data, only acceptable values: ${TileFormat.PNG} or ${TileFormat.JPEG}`);
       throw new Error('invalid data');
     }
     if (row.displayPath === '') {
