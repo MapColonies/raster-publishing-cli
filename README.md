@@ -32,4 +32,5 @@ This is a cli tool to publish raster layers from prepared tiles
   - ```scale``` (optional)
   - ```tilesPath``` (required - map colonies deployment relative layer tiles path)
   - ```storageProvider``` (required - tiles source type, must be ```FS``` or ```S3```)
+  - ```format``` (required - tiles image format, must be ```image/png``` or ```image/jpeg```)
 - run cli with ```node <cli index path> <csv file path>```

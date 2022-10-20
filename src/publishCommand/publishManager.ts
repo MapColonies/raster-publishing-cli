@@ -7,12 +7,14 @@ import { Logger } from '@map-colonies/js-logger';
 import { LayerMetadata, ProductType, RecordType } from '@map-colonies/mc-model-types';
 import { ConflictError } from '@map-colonies/error-types';
 import { SERVICES } from '../common/constants';
-import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
+import { IConfig, PublishedMapLayerCacheType, TileFormat } from '../common/interfaces';
 import { MapPublisherClient } from '../clients/mapPublisherClient';
 import { CatalogClient } from '../clients/catalogClient';
 import { LinkBuilder } from './linksBuilder';
 
 interface Row {
+  id: string;
+  displayPath: string;
   productId: string;
   productName: string;
   productVersion: string;
@@ -31,6 +33,7 @@ interface Row {
   scale: string;
   tilesPath: string;
   storageProvider: string;
+  format: string;
 }
 
 @singleton()
@@ -119,6 +122,7 @@ export class PublishManager {
         cacheType: cacheType,
         name: layerName,
         tilesPath: row.tilesPath,
+        format: row.format as TileFormat,
       });
     } catch (exception) {
       this.logger.error(row, 'Failed to handle row for data:');
@@ -155,6 +159,8 @@ export class PublishManager {
 
   private parseMetadata(row: Row): LayerMetadata {
     const metadata = {
+      id: row.id,
+      displayPath: row.displayPath,
       productId: row.productId,
       minHorizontalAccuracyCE90: parseFloat(row.minHorizontalAccuracyCE90),
       classification: row.classification,
@@ -188,7 +194,7 @@ export class PublishManager {
       creationDate: undefined,
       rms: undefined,
       productBoundingBox: undefined,
-    } as unknown as LayerMetadata;
+    } as LayerMetadata;
     metadata.productBoundingBox = bbox(metadata.footprint).join(',');
     return metadata;
   }
@@ -201,47 +207,59 @@ export class PublishManager {
 
   private validateRow(row: Row): void {
     if (row.productId === '') {
-      this.logger.error('invalid data, missing required filed: productId');
+      this.logger.error('invalid data, missing required field: productId');
       throw new Error('invalid data');
     }
     if (row.productVersion === '') {
-      this.logger.error('invalid data, missing required filed: productVersion');
+      this.logger.error('invalid data, missing required field: productVersion');
       throw new Error('invalid data');
     }
     if (row.minHorizontalAccuracyCE90 === '') {
-      this.logger.error('invalid data, missing required filed: minHorizontalAccuracyCE90');
+      this.logger.error('invalid data, missing required field: minHorizontalAccuracyCE90');
       throw new Error('invalid data');
     }
     if (row.classification === '') {
-      this.logger.error('invalid data, missing required filed: classification');
+      this.logger.error('invalid data, missing required field: classification');
       throw new Error('invalid data');
     }
     if (row.footprint === '') {
-      this.logger.error('invalid data, missing required filed: footprint');
+      this.logger.error('invalid data, missing required field: footprint');
       throw new Error('invalid data');
     }
     if (row.maxResolutionDeg === '') {
-      this.logger.error('invalid data, missing required filed: maxResolutionDeg');
+      this.logger.error('invalid data, missing required field: maxResolutionDeg');
       throw new Error('invalid data');
     }
     if (row.productType === '') {
-      this.logger.error('invalid data, missing required filed: productType');
+      this.logger.error('invalid data, missing required field: productType');
       throw new Error('invalid data');
     }
     if (row.maxResolutionMeter === '') {
-      this.logger.error('invalid data, missing required filed: maxResolutionMeter');
+      this.logger.error('invalid data, missing required field: maxResolutionMeter');
       throw new Error('invalid data');
     }
     if (row.sourceDateStart === '') {
-      this.logger.error('invalid data, missing required filed: sourceDateStart');
+      this.logger.error('invalid data, missing required field: sourceDateStart');
       throw new Error('invalid data');
     }
     if (row.sourceDateEnd === '') {
-      this.logger.error('invalid data, missing required filed: sourceDateEnd');
+      this.logger.error('invalid data, missing required field: sourceDateEnd');
       throw new Error('invalid data');
     }
     if (row.tilesPath === '') {
-      this.logger.error('invalid data, missing required filed: tilesPath');
+      this.logger.error('invalid data, missing required field: tilesPath');
+      throw new Error('invalid data');
+    }
+    if (row.format === '') {
+      this.logger.error('invalid data, missing required field: format');
+      throw new Error('invalid data');
+    }
+    if (row.format !== TileFormat.PNG && row.format !== TileFormat.JPEG) {
+      this.logger.error(`invalid data, only acceptable values: ${TileFormat.PNG} or ${TileFormat.JPEG}`);
+      throw new Error('invalid data');
+    }
+    if (row.displayPath === '') {
+      this.logger.error('invalid data, missing required field: displayPath');
       throw new Error('invalid data');
     }
   }

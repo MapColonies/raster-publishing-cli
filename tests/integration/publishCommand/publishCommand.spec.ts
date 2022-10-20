@@ -62,6 +62,7 @@ describe('PublishCommand', function () {
             name: 'testId1-OrthophotoHistory',
             tilesPath: 'testId1/OrthophotoHistory',
             cacheType: 'file',
+            format: 'image/png',
           },
         ],
         [
@@ -69,18 +70,21 @@ describe('PublishCommand', function () {
             name: 'testId2-VectorBest',
             tilesPath: 'testId2/VectorBest',
             cacheType: 's3',
+            format: 'image/jpeg',
           },
         ],
       ];
       const layer1Metadata = {
+        id: '36a3887b-0e04-4c55-9d6c-09b1f343026c',
+        displayPath: '36a3887b-0e04-4c55-9d6c-09b1f343026c',
         productId: 'testId1',
         productName: 'test1',
-        productVersion: 'testVersion1',
+        productVersion: '1',
         productType: ProductType.ORTHOPHOTO_HISTORY,
         description: 'testdesc1',
         sourceDateStart: new Date(Date.UTC(2011, 10, 5)),
         sourceDateEnd: new Date(Date.UTC(2011, 11, 5)),
-        maxResolutionDeg: 0.098,
+        maxResolutionDeg: 0.072,
         maxResolutionMeter: 100,
         footprint: {
           type: 'Polygon',
@@ -114,9 +118,11 @@ describe('PublishCommand', function () {
         rms: undefined,
       } as unknown as LayerMetadata;
       const layer2Metadata = {
+        id: '2bcb6f6a-75f5-4119-8070-53b9ed8b2530',
+        displayPath: '2bcb6f6a-75f5-4119-8070-53b9ed8b2530',
         productId: 'testId2',
         productName: 'test2',
-        productVersion: 'testVersion2',
+        productVersion: '1',
         productType: ProductType.VECTOR_BEST,
         sourceDateStart: new Date(Date.UTC(2011, 10, 5)),
         sourceDateEnd: new Date(Date.UTC(2011, 10, 5)),
