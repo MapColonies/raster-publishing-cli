@@ -185,7 +185,7 @@ describe('PublishCommand', function () {
                 name: 'testId2-VectorBest',
                 protocol: 'WMTS_BASE',
                 url: 'http://test.maps/wmts',
-              }
+              },
             ],
           },
         ],
@@ -216,7 +216,7 @@ describe('PublishCommand', function () {
                 name: 'testId1-OrthophotoHistory',
                 protocol: 'WMTS_BASE',
                 url: 'http://test.maps/wmts',
-              }
+              },
             ],
           },
         ],
