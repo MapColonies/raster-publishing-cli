@@ -185,13 +185,7 @@ describe('PublishCommand', function () {
                 name: 'testId2-VectorBest',
                 protocol: 'WMTS_BASE',
                 url: 'http://test.maps/wmts',
-              },
-              {
-                description: '',
-                name: 'testId2-VectorBest',
-                protocol: 'WMTS_LAYER',
-                url: 'http://test.maps/wmts/testId2-VectorBest/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
-              },
+              }
             ],
           },
         ],
@@ -222,13 +216,7 @@ describe('PublishCommand', function () {
                 name: 'testId1-OrthophotoHistory',
                 protocol: 'WMTS_BASE',
                 url: 'http://test.maps/wmts',
-              },
-              {
-                description: '',
-                name: 'testId1-OrthophotoHistory',
-                protocol: 'WMTS_LAYER',
-                url: 'http://test.maps/wmts/testId1-OrthophotoHistory/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png',
-              },
+              }
             ],
           },
         ],

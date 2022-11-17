@@ -22,11 +22,5 @@
     "description": "",
     "protocol": "WMTS_BASE",
     "url": "{{serverUrl}}/wmts"
-  },
-  {
-    "name": "{{layerName}}",
-    "description": "",
-    "protocol": "WMTS_LAYER",
-    "url": "{{serverUrl}}/wmts/{{layerName}}/{TileMatrixSet}/{TileMatrix}/{TileCol}/{TileRow}.png"
   }
 ]
