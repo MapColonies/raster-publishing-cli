@@ -1,20 +1,15 @@
-import { IRasterCatalogUpsertRequestBody } from '@map-colonies/mc-model-types';
+import { IRasterCatalogUpsertRequestBody, TileOutputFormat } from '@map-colonies/mc-model-types';
 
 export interface IConfig {
   get: <T>(setting: string) => T;
   has: (setting: string) => boolean;
 }
 
-export enum TileFormat {
-  JPEG = 'image/jpeg',
-  PNG = 'image/png',
-}
-
 export interface IPublishMapLayerRequest {
   name: string;
   tilesPath: string;
   cacheType: PublishedMapLayerCacheType;
-  format: TileFormat;
+  format: TileOutputFormat;
 }
 
 export enum PublishedMapLayerCacheType {
