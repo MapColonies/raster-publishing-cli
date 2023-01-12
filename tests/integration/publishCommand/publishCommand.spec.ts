@@ -1,6 +1,6 @@
 import { trace } from '@opentelemetry/api';
 import jsLogger from '@map-colonies/js-logger';
-import { LayerMetadata, ProductType, RecordType } from '@map-colonies/mc-model-types';
+import { LayerMetadata, ProductType, RecordType, TileOutputFormat, Transparency } from '@map-colonies/mc-model-types';
 import { getApp } from '../../../src/app';
 import { SERVICES } from '../../../src/common/constants';
 import { MapPublisherClient } from '../../../src/clients/mapPublisherClient';
@@ -62,7 +62,7 @@ describe('PublishCommand', function () {
             name: 'testId1-OrthophotoHistory',
             tilesPath: 'testId1/OrthophotoHistory',
             cacheType: 'file',
-            format: 'image/png',
+            format: 'PNG',
           },
         ],
         [
@@ -70,7 +70,7 @@ describe('PublishCommand', function () {
             name: 'testId2-VectorBest',
             tilesPath: 'testId2/VectorBest',
             cacheType: 's3',
-            format: 'image/jpeg',
+            format: 'JPEG',
           },
         ],
       ];
@@ -116,6 +116,8 @@ describe('PublishCommand', function () {
         productSubType: undefined,
         rawProductData: undefined,
         rms: undefined,
+        transparency: Transparency.TRANSPARENT,
+        tileOutputFormat: TileOutputFormat.PNG,
       } as unknown as LayerMetadata;
       const layer2Metadata = {
         id: '2bcb6f6a-75f5-4119-8070-53b9ed8b2530',
@@ -156,6 +158,8 @@ describe('PublishCommand', function () {
         productSubType: undefined,
         rawProductData: undefined,
         rms: undefined,
+        transparency: Transparency.OPAQUE,
+        tileOutputFormat: TileOutputFormat.JPEG,
       };
       const expectedCatalogRequest = [
         [

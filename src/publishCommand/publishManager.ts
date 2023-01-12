@@ -4,10 +4,10 @@ import csv, { Options } from 'csv-parser';
 import bbox from '@turf/bbox';
 import { GeoJSON } from 'geojson';
 import { Logger } from '@map-colonies/js-logger';
-import { LayerMetadata, ProductType, RecordType } from '@map-colonies/mc-model-types';
+import { LayerMetadata, ProductType, RecordType, Transparency, TileOutputFormat } from '@map-colonies/mc-model-types';
 import { ConflictError } from '@map-colonies/error-types';
 import { SERVICES } from '../common/constants';
-import { IConfig, PublishedMapLayerCacheType, TileFormat } from '../common/interfaces';
+import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
 import { MapPublisherClient } from '../clients/mapPublisherClient';
 import { CatalogClient } from '../clients/catalogClient';
 import { LinkBuilder } from './linksBuilder';
@@ -34,6 +34,7 @@ interface Row {
   tilesPath: string;
   storageProvider: string;
   format: string;
+  transparency: string;
 }
 
 @singleton()
@@ -122,11 +123,13 @@ export class PublishManager {
         cacheType: cacheType,
         name: layerName,
         tilesPath: row.tilesPath,
-        format: row.format as TileFormat,
+        format: row.format as TileOutputFormat,
       });
     } catch (exception) {
       this.logger.error(row, 'Failed to handle row for data:');
       throw exception;
+    } finally {
+      this.logger.info(row, 'Finished to handle row');
     }
   }
 
@@ -194,6 +197,8 @@ export class PublishManager {
       creationDate: undefined,
       rms: undefined,
       productBoundingBox: undefined,
+      transparency: row.transparency as Transparency,
+      tileOutputFormat: row.format as TileOutputFormat,
     } as LayerMetadata;
     metadata.productBoundingBox = bbox(metadata.footprint).join(',');
     return metadata;
@@ -254,8 +259,16 @@ export class PublishManager {
       this.logger.error('invalid data, missing required field: format');
       throw new Error('invalid data');
     }
-    if (row.format !== TileFormat.PNG && row.format !== TileFormat.JPEG) {
-      this.logger.error(`invalid data, only acceptable values: ${TileFormat.PNG} or ${TileFormat.JPEG}`);
+    if (row.format !== TileOutputFormat.PNG && row.format !== TileOutputFormat.JPEG) {
+      this.logger.error(`invalid data, 'format' only acceptable values: ${TileOutputFormat.PNG} or ${TileOutputFormat.JPEG}`);
+      throw new Error('invalid data');
+    }
+    if (row.transparency === '') {
+      this.logger.error('invalid data, missing required field: transparency');
+      throw new Error('invalid data');
+    }
+    if (row.transparency !== Transparency.OPAQUE && row.transparency !== Transparency.TRANSPARENT) {
+      this.logger.error(`invalid data, 'transparency' only acceptable values: ${Transparency.OPAQUE} or ${Transparency.TRANSPARENT}`);
       throw new Error('invalid data');
     }
     if (row.displayPath === '') {
