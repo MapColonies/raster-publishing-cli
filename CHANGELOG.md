@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [2.0.0](https://github.com/MapColonies/raster-publishing-cli/compare/v1.3.0...v2.0.0) (2023-01-12)
+
+
+### ⚠ BREAKING CHANGES
+
+* update transparency (MAPCO-2764) (#15)
+
+### Features
+
+* update transparency (MAPCO-2764) ([#15](https://github.com/MapColonies/raster-publishing-cli/issues/15)) ([eb67c68](https://github.com/MapColonies/raster-publishing-cli/commit/eb67c68e4a90134a42beab33551ecf46f4484116))
+
 ## [1.3.0](https://github.com/MapColonies/raster-publishing-cli/compare/v1.2.0...v1.3.0) (2022-09-14)
 
 
