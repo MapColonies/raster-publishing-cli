@@ -20,6 +20,12 @@
   {
     "name": "{{layerName}}",
     "description": "",
+    "protocol": "WMTS_KVP",
+    "url": "{{serverUrl}}/service?REQUEST=GetCapabilities&SERVICE=WMTS"
+  },
+  {
+    "name": "{{layerName}}",
+    "description": "",
     "protocol": "WMTS_BASE",
     "url": "{{serverUrl}}/wmts"
   }
