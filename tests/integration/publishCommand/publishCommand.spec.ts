@@ -187,6 +187,12 @@ describe('PublishCommand', function () {
               {
                 description: '',
                 name: 'testId2-VectorBest',
+                protocol: 'WMTS_KVP',
+                url: 'http://test.maps/service?REQUEST=GetCapabilities&SERVICE=WMTS',
+              },
+              {
+                description: '',
+                name: 'testId2-VectorBest',
                 protocol: 'WMTS_BASE',
                 url: 'http://test.maps/wmts',
               },
@@ -214,6 +220,12 @@ describe('PublishCommand', function () {
                 name: 'testId1-OrthophotoHistory',
                 protocol: 'WMTS',
                 url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
+              },
+              {
+                description: '',
+                name: 'testId1-OrthophotoHistory',
+                protocol: 'WMTS_KVP',
+                url: 'http://test.maps/service?REQUEST=GetCapabilities&SERVICE=WMTS',
               },
               {
                 description: '',
