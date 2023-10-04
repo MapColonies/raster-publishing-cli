@@ -67,8 +67,8 @@ describe('PublishCommand', function () {
         ],
         [
           {
-            name: 'testId2-VectorBest',
-            tilesPath: 'testId2/VectorBest',
+            name: 'testId2-RasterVector',
+            tilesPath: 'testId2/RasterVector',
             cacheType: 's3',
             format: 'JPEG',
           },
@@ -126,7 +126,7 @@ describe('PublishCommand', function () {
         productId: 'testId2',
         productName: 'test2',
         productVersion: '1',
-        productType: ProductType.VECTOR_BEST,
+        productType: ProductType.RASTER_VECTOR,
         sourceDateStart: new Date(Date.UTC(2011, 10, 5)),
         sourceDateEnd: new Date(Date.UTC(2011, 10, 5)),
         maxResolutionDeg: 0.072,
@@ -170,31 +170,31 @@ describe('PublishCommand', function () {
             links: [
               {
                 description: '',
-                name: 'testId2-VectorBest',
+                name: 'testId2-RasterVector',
                 protocol: 'WMS',
                 url: 'http://test.maps/service?REQUEST=GetCapabilities',
               },
               {
                 description: '',
-                name: 'testId2-VectorBest',
+                name: 'testId2-RasterVector',
                 protocol: 'WMS_BASE',
                 url: 'http://test.maps/wms',
               },
               {
                 description: '',
-                name: 'testId2-VectorBest',
+                name: 'testId2-RasterVector',
                 protocol: 'WMTS',
                 url: 'http://test.maps/wmts/1.0.0/WMTSCapabilities.xml',
               },
               {
                 description: '',
-                name: 'testId2-VectorBest',
+                name: 'testId2-RasterVector',
                 protocol: 'WMTS_KVP',
                 url: 'http://test.maps/service?REQUEST=GetCapabilities&SERVICE=WMTS',
               },
               {
                 description: '',
-                name: 'testId2-VectorBest',
+                name: 'testId2-RasterVector',
                 protocol: 'WMTS_BASE',
                 url: 'http://test.maps/wmts',
               },
