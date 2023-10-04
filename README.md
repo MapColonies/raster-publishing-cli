@@ -34,4 +34,5 @@ This is a cli tool to publish raster layers from prepared tiles
   - ```storageProvider``` (required - tiles source type, must be ```FS``` or ```S3```)
   - ```format``` (required - tiles target image format, must be ```PNG``` or ```JPEG```)
   - ```transparency``` (required - layer transparency, must be ```TRANSPARENT``` or ```OPAQUE```)
+  - ```tileMimeFormat``` (required - layer tileMimeFormat, must be ```image/png``` or ```image/jpeg```)
 - run cli with ```node <cli index path> <csv file path>```

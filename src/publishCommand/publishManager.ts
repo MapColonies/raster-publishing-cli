@@ -5,6 +5,7 @@ import bbox from '@turf/bbox';
 import { GeoJSON } from 'geojson';
 import { Logger } from '@map-colonies/js-logger';
 import { LayerMetadata, ProductType, RecordType, Transparency, TileOutputFormat } from '@map-colonies/mc-model-types';
+import { TilesMimeFormat } from '@map-colonies/types';
 import { ConflictError } from '@map-colonies/error-types';
 import { SERVICES } from '../common/constants';
 import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
@@ -35,6 +36,7 @@ interface Row {
   storageProvider: string;
   format: string;
   transparency: string;
+  tileMimeFormat: string;
 }
 
 @singleton()
@@ -199,6 +201,7 @@ export class PublishManager {
       productBoundingBox: undefined,
       transparency: row.transparency as Transparency,
       tileOutputFormat: row.format as TileOutputFormat,
+      tileMimeFormat: row.tileMimeFormat as TilesMimeFormat,
     } as LayerMetadata;
     metadata.productBoundingBox = bbox(metadata.footprint).join(',');
     return metadata;
@@ -263,6 +266,17 @@ export class PublishManager {
       this.logger.error(`invalid data, 'format' only acceptable values: ${TileOutputFormat.PNG} or ${TileOutputFormat.JPEG}`);
       throw new Error('invalid data');
     }
+
+    if (row.tileMimeFormat === '') {
+      this.logger.error('invalid data, missing required field: tileMimeFormat');
+      throw new Error('invalid data');
+    }
+
+    if (row.tileMimeFormat !== 'image/png' && row.tileMimeFormat !== 'image/jpeg') {
+      this.logger.error(`invalid data, 'tileMimeFormat' only acceptable values: "image/png" or "image/jpeg"`);
+      throw new Error('invalid data');
+    }
+
     if (row.transparency === '') {
       this.logger.error('invalid data, missing required field: transparency');
       throw new Error('invalid data');
