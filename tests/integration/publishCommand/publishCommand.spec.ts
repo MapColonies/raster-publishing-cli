@@ -118,7 +118,7 @@ describe('PublishCommand', function () {
         rms: undefined,
         transparency: Transparency.TRANSPARENT,
         tileOutputFormat: TileOutputFormat.PNG,
-        tileMimeFormat: 'image/png'
+        tileMimeFormat: 'image/png',
       } as unknown as LayerMetadata;
       const layer2Metadata = {
         id: '2bcb6f6a-75f5-4119-8070-53b9ed8b2530',
@@ -161,8 +161,7 @@ describe('PublishCommand', function () {
         rms: undefined,
         transparency: Transparency.OPAQUE,
         tileOutputFormat: TileOutputFormat.JPEG,
-        tileMimeFormat: 'image/jpeg'
-
+        tileMimeFormat: 'image/jpeg',
       };
       const expectedCatalogRequest = [
         [

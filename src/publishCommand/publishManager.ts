@@ -4,7 +4,7 @@ import csv, { Options } from 'csv-parser';
 import bbox from '@turf/bbox';
 import { GeoJSON } from 'geojson';
 import { Logger } from '@map-colonies/js-logger';
-import { LayerMetadata, ProductType, RecordType, Transparency, TileOutputFormat,  } from '@map-colonies/mc-model-types';
+import { LayerMetadata, ProductType, RecordType, Transparency, TileOutputFormat } from '@map-colonies/mc-model-types';
 import { TilesMimeFormat } from '@map-colonies/types';
 import { ConflictError } from '@map-colonies/error-types';
 import { SERVICES } from '../common/constants';
@@ -36,7 +36,7 @@ interface Row {
   storageProvider: string;
   format: string;
   transparency: string;
-  tileMimeFormat: string
+  tileMimeFormat: string;
 }
 
 @singleton()
@@ -278,13 +278,13 @@ export class PublishManager {
       this.logger.error('invalid data, missing required field: displayPath');
       throw new Error('invalid data');
     }
-    
+
     if (row.tileMimeFormat === '') {
       this.logger.error('invalid data, missing required field: tileMimeFormat');
       throw new Error('invalid data');
     }
 
-    const isTilesMimeFormat = (x: any): x is TilesMimeFormat => row.tileMimeFormat.includes(x);
+    const isTilesMimeFormat = (x: string): x is TilesMimeFormat => row.tileMimeFormat.includes(x);
     if (!isTilesMimeFormat(row.tileMimeFormat)) {
       this.logger.error(`invalid data, 'tileMimeFormat' only acceptable values: image/png | image/jpeg`);
       throw new Error('invalid data');
