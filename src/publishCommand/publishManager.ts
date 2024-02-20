@@ -5,6 +5,7 @@ import bbox from '@turf/bbox';
 import { GeoJSON } from 'geojson';
 import { Logger } from '@map-colonies/js-logger';
 import { LayerMetadata, ProductType, RecordType, Transparency, TileOutputFormat } from '@map-colonies/mc-model-types';
+import { TilesMimeFormat, lookup as mimeLookup } from '@map-colonies/types';
 import { ConflictError } from '@map-colonies/error-types';
 import { SERVICES } from '../common/constants';
 import { IConfig, PublishedMapLayerCacheType } from '../common/interfaces';
@@ -161,6 +162,7 @@ export class PublishManager {
   }
 
   private parseMetadata(row: Row): LayerMetadata {
+    const tileMimeFormat = mimeLookup(row.format) as TilesMimeFormat;
     const metadata = {
       id: row.id,
       displayPath: row.displayPath,
@@ -199,6 +201,7 @@ export class PublishManager {
       productBoundingBox: undefined,
       transparency: row.transparency as Transparency,
       tileOutputFormat: row.format as TileOutputFormat,
+      tileMimeFormat: tileMimeFormat,
     } as LayerMetadata;
     metadata.productBoundingBox = bbox(metadata.footprint).join(',');
     return metadata;
@@ -273,6 +276,13 @@ export class PublishManager {
     }
     if (row.displayPath === '') {
       this.logger.error('invalid data, missing required field: displayPath');
+      throw new Error('invalid data');
+    }
+
+    const tileMimeFormat = mimeLookup(row.format) as TilesMimeFormat;
+    const isTilesMimeFormat = (x: string): x is TilesMimeFormat => tileMimeFormat.includes(x);
+    if (!isTilesMimeFormat(tileMimeFormat)) {
+      this.logger.error(`invalid data, 'tileMimeFormat' only acceptable values: image/png | image/jpeg`);
       throw new Error('invalid data');
     }
   }
