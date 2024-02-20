@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [3.0.0](https://github.com/MapColonies/raster-publishing-cli/compare/v2.0.1...v3.0.0) (2024-02-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* implementing tileMimeFormat column (MAPCO-3257) (#18)
+
+### Features
+
+* implementing tileMimeFormat column (MAPCO-3257) ([#18](https://github.com/MapColonies/raster-publishing-cli/issues/18)) ([6c016d6](https://github.com/MapColonies/raster-publishing-cli/commit/6c016d6023e48e7eead0c608118ffd367e49df73))
+
 ### [2.0.1](https://github.com/MapColonies/raster-publishing-cli/compare/v2.0.0...v2.0.1) (2023-04-20)
 
 ## [2.0.0](https://github.com/MapColonies/raster-publishing-cli/compare/v1.3.0...v2.0.0) (2023-01-12)
